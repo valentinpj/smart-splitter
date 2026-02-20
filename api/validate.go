@@ -55,6 +55,9 @@ func validateGoal(g models.Goal, amtP, unitP int) error {
 	if err := validateAmountField(g.OrderAmount, "orderAmount", true, amtP); err != nil {
 		return err
 	}
+	if strings.ToLower(g.OrderType) == "redemption" && len(g.GoalDetails) == 0 {
+		return fmt.Errorf("goalDetails must not be empty for redemption orders")
+	}
 	for _, h := range g.GoalDetails {
 		if err := validateHolding(h, amtP, unitP); err != nil {
 			return err
