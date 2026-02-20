@@ -1,0 +1,2638 @@
+[
+  // test 1
+  {
+    "message": "Order amount: value must be greater than 0",
+    "error": "Bad Request",
+    "statusCode": 400
+},
+  // test 2
+  [
+    {
+      "goalId": "testI2",
+      "transactionType": "Investment",
+      "transactionDetails": [
+        {
+          "ticker": "VTI",
+          "direction": "BUY",
+          "value": "0.01",
+          "units": "0.00007052",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum topup amount",
+            "code": "MIN_TOPUP_VIOLATION"
+          }
+        },
+        {
+          "ticker": "AGG",
+          "direction": "BUY",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum topup amount",
+            "code": "MIN_TOPUP_VIOLATION"
+          }
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "BUY",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum topup amount",
+            "code": "MIN_TOPUP_VIOLATION"
+          }
+        },
+        {
+          "ticker": "MUB",
+          "direction": "BUY",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum topup amount",
+            "code": "MIN_TOPUP_VIOLATION"
+          }
+        },
+        {
+          "ticker": "IWP",
+          "direction": "BUY",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum topup amount",
+            "code": "MIN_TOPUP_VIOLATION"
+          }
+        },
+        {
+          "ticker": "IVW",
+          "direction": "BUY",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum topup amount",
+            "code": "MIN_TOPUP_VIOLATION"
+          }
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "BUY",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum topup amount",
+            "code": "MIN_TOPUP_VIOLATION"
+          }
+        },
+        {
+          "ticker": "PNQI",
+          "direction": "BUY",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum initial investment amount",
+            "code": "MIN_INVESTMENT_VIOLATION"
+          }
+        }
+      ]
+    }
+  ],
+  // test 3
+  [
+    {
+      "goalId": "testI3",
+      "transactionType": "Investment",
+      "transactionDetails": [
+        {
+          "ticker": "AGG",
+          "direction": "BUY",
+          "value": "0.02",
+          "units": "0.00017113"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "BUY",
+          "value": "0.01",
+          "units": "0.00015746",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum topup amount",
+            "code": "MIN_TOPUP_VIOLATION"
+          }
+        },
+        {
+          "ticker": "VTI",
+          "direction": "BUY",
+          "value": "0.01",
+          "units": "0.00007052",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum topup amount",
+            "code": "MIN_TOPUP_VIOLATION"
+          }
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "BUY",
+          "value": "0.01",
+          "units": "0.00028281",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum topup amount",
+            "code": "MIN_TOPUP_VIOLATION"
+          }
+        },
+        {
+          "ticker": "MUB",
+          "direction": "BUY",
+          "value": "0.01",
+          "units": "0.00008963",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum topup amount",
+            "code": "MIN_TOPUP_VIOLATION"
+          }
+        },
+        {
+          "ticker": "IWP",
+          "direction": "BUY",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum topup amount",
+            "code": "MIN_TOPUP_VIOLATION"
+          }
+        },
+        {
+          "ticker": "IVW",
+          "direction": "BUY",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum topup amount",
+            "code": "MIN_TOPUP_VIOLATION"
+          }
+        },
+        {
+          "ticker": "PNQI",
+          "direction": "BUY",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum initial investment amount",
+            "code": "MIN_INVESTMENT_VIOLATION"
+          }
+        }
+      ]
+    }
+  ],
+  // test 4
+  [
+    {
+      "goalId": "testI4",
+      "transactionType": "Investment",
+      "transactionDetails": [
+        {
+          "ticker": "VTI",
+          "direction": "BUY",
+          "value": "21.34",
+          "units": "0.15048304"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "BUY",
+          "value": "18.71",
+          "units": "0.52912896"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "BUY",
+          "value": "1.97",
+          "units": "0.01440585"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "BUY",
+          "value": "1.98",
+          "units": "0.01077844"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "BUY",
+          "value": "8.85",
+          "units": "0.13934813"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "BUY",
+          "value": "27",
+          "units": "0.23102593"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "BUY",
+          "value": "18",
+          "units": "0.16133369"
+        },
+        {
+          "ticker": "PNQI",
+          "direction": "BUY",
+          "value": "2.15",
+          "units": "0.01513552"
+        }
+      ]
+    }
+  ],
+  // test 5
+  [
+    {
+      "goalId": "testI5",
+      "transactionType": "Investment",
+      "transactionDetails": [
+        {
+          "ticker": "VTI",
+          "direction": "BUY",
+          "value": "21340000",
+          "units": "150483.04068824"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "BUY",
+          "value": "18710000",
+          "units": "529128.95927602"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "BUY",
+          "value": "1970000",
+          "units": "14405.85009141"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "BUY",
+          "value": "1980000",
+          "units": "10778.44311377"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "BUY",
+          "value": "8850000",
+          "units": "139348.1341521"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "BUY",
+          "value": "27000000",
+          "units": "231025.92624283"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "BUY",
+          "value": "18000000",
+          "units": "161333.69185265"
+        },
+        {
+          "ticker": "PNQI",
+          "direction": "BUY",
+          "value": "2150000",
+          "units": "15135.5156635"
+        }
+      ]
+    }
+  ],
+  // test 6
+  [
+    {
+      "goalId": "testI6",
+      "transactionType": "Investment",
+      "transactionDetails": [
+        {
+          "ticker": "VTI",
+          "direction": "BUY",
+          "value": "21.34",
+          "units": "0.15048304"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "BUY",
+          "value": "18.71",
+          "units": "0.52912896"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "BUY",
+          "value": "1.97",
+          "units": "0.01440585"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "BUY",
+          "value": "1.98",
+          "units": "0.01077844"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "BUY",
+          "value": "8.85",
+          "units": "0.13934813"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "BUY",
+          "value": "29.14",
+          "units": "0.24933687"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "BUY",
+          "value": "18",
+          "units": "0.16133369"
+        },
+        {
+          "ticker": "PNQI",
+          "direction": "BUY",
+          "value": "0.01",
+          "units": "0.0000704",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum initial investment amount",
+            "code": "MIN_INVESTMENT_VIOLATION"
+          }
+        }
+      ]
+    }
+  ],
+  // test 7
+  [
+    {
+      "goalId": "testI7",
+      "transactionType": "Investment",
+      "transactionDetails": [
+        {
+          "ticker": "VTI",
+          "direction": "BUY",
+          "value": "21.34",
+          "units": "0.15048304"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "BUY",
+          "value": "18.71",
+          "units": "0.52912896"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "BUY",
+          "value": "1.97",
+          "units": "0.01440585"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "BUY",
+          "value": "1.98",
+          "units": "0.01077844"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "BUY",
+          "value": "8.85",
+          "units": "0.13934813"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "BUY",
+          "value": "29.14",
+          "units": "0.24933687"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "BUY",
+          "value": "18",
+          "units": "0.16133369"
+        },
+        {
+          "ticker": "PNQI",
+          "direction": "BUY",
+          "value": "0.01",
+          "units": "0.0000704",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum initial investment amount",
+            "code": "MIN_INVESTMENT_VIOLATION"
+          }
+        }
+      ]
+    }
+  ],
+  // test 8
+  [
+    {
+      "goalId": "testI8",
+      "transactionType": "Investment",
+      "transactionDetails": [
+        {
+          "ticker": "VTI",
+          "direction": "BUY",
+          "value": "21.34",
+          "units": "0.15048304"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "BUY",
+          "value": "18.71",
+          "units": "0.52912896"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "BUY",
+          "value": "1.97",
+          "units": "0.01440585"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "BUY",
+          "value": "1.98",
+          "units": "0.01077844"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "BUY",
+          "value": "8.85",
+          "units": "0.13934813"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "BUY",
+          "value": "29.14",
+          "units": "0.24933687"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "BUY",
+          "value": "18",
+          "units": "0.16133369"
+        },
+        {
+          "ticker": "PNQI",
+          "direction": "BUY",
+          "value": "0.01",
+          "units": "0.0000704"
+        }
+      ]
+    }
+  ],
+  // test 9
+  [
+    {
+      "goalId": "testI9",
+      "transactionType": "Investment",
+      "transactionDetails": [
+        {
+          "ticker": "VTI",
+          "direction": "BUY",
+          "value": "21.34",
+          "units": "0.15048304"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "BUY",
+          "value": "18.71",
+          "units": "0.52912896"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "BUY",
+          "value": "1.97",
+          "units": "0.01440585"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "BUY",
+          "value": "1.98",
+          "units": "0.01077844"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "BUY",
+          "value": "8.85",
+          "units": "0.13934813"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "BUY",
+          "value": "29.14",
+          "units": "0.24933687"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "BUY",
+          "value": "18",
+          "units": "0.16133369",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum initial investment amount",
+            "code": "MIN_INVESTMENT_VIOLATION"
+          }
+        },
+        {
+          "ticker": "PNQI",
+          "direction": "BUY",
+          "value": "0.01",
+          "units": "0.0000704"
+        }
+      ]
+    }
+  ],
+  // test 10
+  [
+    {
+      "goalId": "testI9b",
+      "transactionType": "Investment",
+      "transactionDetails": [
+        {
+          "ticker": "VTI",
+          "direction": "BUY",
+          "value": "21.34",
+          "units": "0.15048304"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "BUY",
+          "value": "18.71",
+          "units": "0.52912896"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "BUY",
+          "value": "1.97",
+          "units": "0.01440585"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "BUY",
+          "value": "1.98",
+          "units": "0.01077844"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "BUY",
+          "value": "8.85",
+          "units": "0.13934813"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "BUY",
+          "value": "29.14",
+          "units": "0.24933687"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "BUY",
+          "value": "18",
+          "units": "0.16133369"
+        },
+        {
+          "ticker": "PNQI",
+          "direction": "BUY",
+          "value": "0.01",
+          "units": "0.0000704"
+        }
+      ]
+    }
+  ],
+  // test 11
+  [
+    {
+      "goalId": "testI10",
+      "transactionType": "Investment",
+      "transactionDetails": [
+        {
+          "ticker": "VTI",
+          "direction": "BUY",
+          "value": "21.34",
+          "units": "0.15048304"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "BUY",
+          "value": "18.71",
+          "units": "0.52912896"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "BUY",
+          "value": "1.97",
+          "units": "0.01440585"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "BUY",
+          "value": "1.98",
+          "units": "0.01077844"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "BUY",
+          "value": "8.85",
+          "units": "0.13934813"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "BUY",
+          "value": "29.14",
+          "units": "0.24933687"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "BUY",
+          "value": "18",
+          "units": "0.16133369"
+        },
+        {
+          "ticker": "PNQI",
+          "direction": "BUY",
+          "value": "0.01",
+          "units": "0.0000704"
+        }
+      ]
+    }
+  ],
+  // test 12
+  [
+    {
+      "goalId": "testI10b",
+      "transactionType": "Investment",
+      "transactionDetails": [
+        {
+          "ticker": "VTI",
+          "direction": "BUY",
+          "value": "21.34",
+          "units": "0.15048304"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "BUY",
+          "value": "18.71",
+          "units": "0.52912896"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "BUY",
+          "value": "1.97",
+          "units": "0.01440585"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "BUY",
+          "value": "1.98",
+          "units": "0.01077844"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "BUY",
+          "value": "8.85",
+          "units": "0.13934813"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "BUY",
+          "value": "29.14",
+          "units": "0.24933687"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "BUY",
+          "value": "18",
+          "units": "0.16133369",
+          "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum initial investment number of units",
+                    "code": "MIN_INVESTMENT_VIOLATION"
+                }
+        },
+        {
+          "ticker": "PNQI",
+          "direction": "BUY",
+          "value": "0.01",
+          "units": "0.0000704"
+        }
+      ]
+    }
+  ],
+  // test 13
+  [
+    {
+      "goalId": "testI11",
+      "transactionType": "Investment",
+      "transactionDetails": [
+        {
+          "ticker": "MUB",
+          "direction": "BUY",
+          "value": "0.19",
+          "units": "0.00170297"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "BUY",
+          "value": "0.2",
+          "units": "0.00565611"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "BUY",
+          "value": "0.31",
+          "units": "0.00265252"
+        },
+        {
+          "ticker": "VTI",
+          "direction": "BUY",
+          "value": "0.22",
+          "units": "0.00155137"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "BUY",
+          "value": "0.09",
+          "units": "0.0014171"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "BUY",
+          "value": "0.02",
+          "units": "0.00014625"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "BUY",
+          "value": "0.02",
+          "units": "0.00010887"
+        },
+        {
+          "ticker": "PNQI",
+          "direction": "BUY",
+          "value": "0",
+          "units": "0",
+          "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum initial investment amount",
+                    "code": "MIN_INVESTMENT_VIOLATION"
+                }
+        }
+      ]
+    }
+  ],
+  // test 14
+  [
+    {
+      "goalId": "testI12",
+      "transactionType": "Investment",
+      "transactionDetails": [
+        {
+          "ticker": "AGG",
+          "direction": "BUY",
+          "value": "3",
+          "units": "0.02566955"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "BUY",
+          "value": "2",
+          "units": "0.05656109"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "BUY",
+          "value": "2",
+          "units": "0.01792597"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "BUY",
+          "value": "1",
+          "units": "0.01574555"
+        },
+        {
+          "ticker": "VTI",
+          "direction": "BUY",
+          "value": "2",
+          "units": "0.01410338"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "BUY",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum initial investment amount",
+            "code": "MIN_INVESTMENT_VIOLATION"
+          }
+        },
+        {
+          "ticker": "IVW",
+          "direction": "BUY",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum initial investment amount",
+            "code": "MIN_INVESTMENT_VIOLATION"
+          }
+        },
+        {
+          "ticker": "PNQI",
+          "direction": "BUY",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum initial investment amount",
+            "code": "MIN_INVESTMENT_VIOLATION"
+          }
+        }
+      ]
+    }
+  ],
+  // test 15
+  {
+    "message": "Goal ticker VTI units: value precision must not be greater than 5",
+    "error": "Bad Request",
+    "statusCode": 400
+},
+  // test 16
+  [
+    {
+      "goalId": "testI14",
+      "transactionType": "Investment",
+      "transactionDetails": [
+        {
+          "ticker": "EFAV",
+          "direction": "BUY",
+          "value": "292.14",
+          "units": "4.59991"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "BUY",
+          "value": "891.28",
+          "units": "7.62625"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "BUY",
+          "value": "617.61",
+          "units": "17.46635"
+        },
+        {
+          "ticker": "VTI",
+          "direction": "BUY",
+          "value": "704.43",
+          "units": "4.96742"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "BUY",
+          "value": "66.02",
+          "units": "0.48278"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "BUY",
+          "value": "66.02",
+          "units": "0.35939"
+        },
+        {
+          "ticker": "CASH_USD",
+          "direction": "BUY",
+          "value": "66.02",
+          "units": "66.02"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "BUY",
+          "value": "597.48",
+          "units": "5.3552"
+        }
+      ]
+    }
+  ],
+  // test 17
+  {
+    "message": "Model portfolio details required to process Investment order",
+    "error": "Bad Request",
+    "statusCode": 400
+},
+  // test 18
+  {
+    "message": "Model portfolio MP1 weight sum must be equal to 1",
+    "error": "Bad Request",
+    "statusCode": 400
+},
+  // test 19
+  [
+    {
+      "goalId": "testI17",
+      "transactionType": "Investment",
+      "transactionDetails": [
+            {
+                "ticker": "VTI",
+                "direction": "BUY",
+                "value": "135",
+                "units": "0.951978"
+            },
+            {
+                "ticker": "DGRO",
+                "direction": "BUY",
+                "value": "93.55",
+                "units": "2.6456448"
+            },
+            {
+                "ticker": "IWP",
+                "direction": "BUY",
+                "value": "10",
+                "units": "0.07312614"
+            },
+            {
+                "ticker": "IVW",
+                "direction": "BUY",
+                "value": "10",
+                "units": "0.05443658"
+            },
+            {
+                "ticker": "EFAV",
+                "direction": "BUY",
+                "value": "44.25",
+                "units": "0.69674067"
+            },
+            {
+                "ticker": "AGG",
+                "direction": "BUY",
+                "value": "106.7",
+                "units": "0.91298023"
+            },
+            {
+                "ticker": "MUB",
+                "direction": "BUY",
+                "value": "90.5",
+                "units": "0.81114995"
+            },
+            {
+                "ticker": "CASH_USD",
+                "direction": "BUY",
+                "value": "10",
+                "units": "10"
+            }
+        ]
+    }
+  ],
+  // test 20
+  {
+    "message": "Ticker MUB contributionFee is invalid: value must not be greater than 1",
+    "error": "Bad Request",
+    "statusCode": 400
+},
+  // test 21
+  [
+    {
+      "goalId": "testI19",
+      "transactionType": "Investment",
+      "transactionDetails": [
+        {
+          "ticker": "VTI",
+          "direction": "BUY",
+          "value": "21.34",
+          "units": "0.15048304"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "BUY",
+          "value": "18.71",
+          "units": "0.52912896"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "BUY",
+          "value": "1.97",
+          "units": "0.01440585"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "BUY",
+          "value": "1.98",
+          "units": "0.01077844"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "BUY",
+          "value": "8.85",
+          "units": "0.13934813"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "BUY",
+          "value": "27",
+          "units": "0.23102593"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "BUY",
+          "value": "18",
+          "units": "0.16133369"
+        },
+        {
+          "ticker": "PNQI",
+          "direction": "BUY",
+          "value": "2.15",
+          "units": "0.01513552"
+        }
+      ]
+    }
+  ],
+  // test 22
+  {
+    "message": "Order amount: value must be greater than 0",
+    "error": "Bad Request",
+    "statusCode": 400
+},
+  // test 23
+  {
+    "message": "Order amount: value must be greater than 0",
+    "error": "Bad Request",
+    "statusCode": 400
+},
+  // test 24
+  [
+    {
+      "goalId": "testR2",
+      "transactionType": "Small Redemption",
+      "transactionDetails": [
+        {
+          "ticker": "VTI",
+          "direction": "SELL",
+          "value": "0.01",
+          "units": "0.00007052"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "SELL",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum redemption number of units",
+            "code": "MIN_REDEMPTION_VIOLATION"
+          }
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "SELL",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum redemption number of units",
+            "code": "MIN_REDEMPTION_VIOLATION"
+          }
+        },
+        {
+          "ticker": "MUB",
+          "direction": "SELL",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum redemption number of units",
+            "code": "MIN_REDEMPTION_VIOLATION"
+          }
+        },
+        {
+          "ticker": "IWP",
+          "direction": "SELL",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum redemption number of units",
+            "code": "MIN_REDEMPTION_VIOLATION"
+          }
+        },
+        {
+          "ticker": "VWO",
+          "direction": "SELL",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum redemption number of units",
+            "code": "MIN_REDEMPTION_VIOLATION"
+          }
+        },
+        {
+          "ticker": "IVW",
+          "direction": "SELL",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum redemption number of units",
+            "code": "MIN_REDEMPTION_VIOLATION"
+          }
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "SELL",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum redemption number of units",
+            "code": "MIN_REDEMPTION_VIOLATION"
+          }
+        },
+        {
+          "ticker": "CASH",
+          "direction": "SELL",
+          "value": "0",
+          "units": "0",
+          "error": {
+            "message": "Cannot trade this ticker because it breaches the minimum redemption number of units",
+            "code": "MIN_REDEMPTION_VIOLATION"
+          }
+        }
+      ]
+    }
+  ],
+  // test 25
+  [
+    {
+      "goalId": "testS2",
+      "transactionType": "Partial Switch",
+      "transactionDetails": [
+        {
+          "ticker": "VTI",
+          "direction": "SELL",
+          "value": "0.01",
+          "units": "0.00007052"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "SELL",
+          "value": "0",
+          "units": "0"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "SELL",
+          "value": "0",
+          "units": "0"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "SELL",
+          "value": "0",
+          "units": "0"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "SELL",
+          "value": "0",
+          "units": "0"
+        },
+        {
+          "ticker": "VWO",
+          "direction": "SELL",
+          "value": "0",
+          "units": "0"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "SELL",
+          "value": "0",
+          "units": "0"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "SELL",
+          "value": "0",
+          "units": "0"
+        },
+        {
+          "ticker": "CASH",
+          "direction": "SELL",
+          "value": "0",
+          "units": "0"
+        }
+      ]
+    }
+  ],
+  // test 26
+  [
+    {
+        "goalId": "testR3",
+        "transactionType": "Small Redemption",
+        "transactionDetails": [
+            {
+                "ticker": "VTI",
+                "direction": "SELL",
+                "units": "0.00077569",
+                "value": "0.11"
+            },
+            {
+                "ticker": "MUB",
+                "direction": "SELL",
+                "units": "0.00080667",
+                "value": "0.09"
+            },
+            {
+                "ticker": "AGG",
+                "direction": "SELL",
+                "units": "0.00111235",
+                "value": "0.13"
+            },
+            {
+                "ticker": "DGRO",
+                "direction": "SELL",
+                "units": "0.00254525",
+                "value": "0.09"
+            },
+            {
+                "ticker": "EFAV",
+                "direction": "SELL",
+                "units": "0.00062982",
+                "value": "0.04"
+            },
+            {
+                "ticker": "IWP",
+                "direction": "SELL",
+                "units": "0.00007313",
+                "value": "0.01"
+            },
+            {
+                "ticker": "VWO",
+                "direction": "SELL",
+                "units": "0.00028604",
+                "value": "0.01"
+            },
+            {
+                "ticker": "IVW",
+                "direction": "SELL",
+                "units": "0.00005444",
+                "value": "0.01"
+            },
+            {
+                "ticker": "CASH",
+                "direction": "SELL",
+                "units": "0",
+                "value": "0",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum redemption number of units",
+                    "code": "MIN_REDEMPTION_VIOLATION"
+                }
+            }
+        ]
+    }
+],
+  // test 27
+  [
+    {
+      "goalId": "testS3",
+      "transactionType": "Partial Switch",
+      "transactionDetails": [
+        {
+          "ticker": "VTI",
+          "direction": "SELL",
+          "value": "0.11",
+          "units": "0.00077569"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "SELL",
+          "value": "0.09",
+          "units": "0.00080667"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "SELL",
+          "value": "0.13",
+          "units": "0.00111235"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "SELL",
+          "value": "0.09",
+          "units": "0.00254525"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "SELL",
+          "value": "0.04",
+          "units": "0.00062982"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "SELL",
+          "value": "0.01",
+          "units": "0.00007313"
+        },
+        {
+          "ticker": "VWO",
+          "direction": "SELL",
+          "value": "0.01",
+          "units": "0.00028604"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "SELL",
+          "value": "0.01",
+          "units": "0.00005444"
+        },
+        {
+          "ticker": "CASH",
+          "direction": "SELL",
+          "value": "0",
+          "units": "0"
+        }
+      ]
+    }
+  ],
+// test 28
+  [
+    {
+        "goalId": "testR4",
+        "transactionType": "Small Redemption",
+        "transactionDetails": [
+            {
+                "ticker": "AGG",
+                "direction": "SELL",
+                "value": "402.38",
+                "units": "3.44297082"
+            },
+            {
+                "ticker": "DGRO",
+                "direction": "SELL",
+                "value": "285.74",
+                "units": "8.08088235"
+            },
+            {
+                "ticker": "VTI",
+                "direction": "SELL",
+                "value": "333.39",
+                "units": "2.35096256"
+            },
+            {
+                "ticker": "MUB",
+                "direction": "SELL",
+                "value": "263.79",
+                "units": "2.36434525"
+            },
+            {
+                "ticker": "EFAV",
+                "direction": "SELL",
+                "value": "132.67",
+                "units": "2.08896237"
+            },
+            {
+                "ticker": "IWP",
+                "direction": "SELL",
+                "value": "31.48",
+                "units": "0.2302011"
+            },
+            {
+                "ticker": "CASH",
+                "direction": "SELL",
+                "value": "0.46",
+                "units": "0.46"
+            },
+            {
+                "ticker": "IVW",
+                "direction": "SELL",
+                "value": "31.13",
+                "units": "0.16946108"
+            },
+            {
+                "ticker": "VWO",
+                "direction": "SELL",
+                "value": "31.48",
+                "units": "0.90045767"
+            }
+        ]
+    }
+],
+  // test 29
+  [
+    {
+      "goalId": "testS4",
+      "transactionType": "Partial Switch",
+      "transactionDetails": [
+        {
+          "ticker": "AGG",
+          "direction": "SELL",
+          "value": "402.38",
+          "units": "3.44297082"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "SELL",
+          "value": "285.74",
+          "units": "8.08088235"
+        },
+        {
+          "ticker": "VTI",
+          "direction": "SELL",
+          "value": "333.39",
+          "units": "2.35096256"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "SELL",
+          "value": "263.79",
+          "units": "2.36434525"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "SELL",
+          "value": "132.67",
+          "units": "2.08896237"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "SELL",
+          "value": "31.48",
+          "units": "0.2302011"
+        },
+        {
+          "ticker": "CASH",
+          "direction": "SELL",
+          "value": "0.46",
+          "units": "0.46"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "SELL",
+          "value": "31.13",
+          "units": "0.16946108"
+        },
+        {
+          "ticker": "VWO",
+          "direction": "SELL",
+          "value": "31.48",
+          "units": "0.90045767"
+        }
+      ]
+    }
+  ],
+  // test 30
+  [
+    {
+      "goalId": "testR5",
+      "transactionType": "Big Redemption",
+      "transactionDetails": [
+        {
+          "ticker": "DGRO",
+          "direction": "SELL",
+          "value": "566.75",
+          "units": "16.02799774"
+        },
+        {
+          "ticker": "CASH",
+          "direction": "SELL",
+          "value": "0.93",
+          "units": "0.93"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "SELL",
+          "value": "798.1",
+          "units": "6.82895525"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "SELL",
+          "value": "62.46",
+          "units": "0.45674589"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "SELL",
+          "value": "61.75",
+          "units": "0.33614589"
+        },
+        {
+          "ticker": "VTI",
+          "direction": "SELL",
+          "value": "661.24",
+          "units": "4.66285875"
+        },
+        {
+          "ticker": "VWO",
+          "direction": "SELL",
+          "value": "62.44",
+          "units": "1.78604119"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "SELL",
+          "value": "523.19",
+          "units": "4.68934301"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "SELL",
+          "value": "263.14",
+          "units": "4.14328452"
+        }
+      ]
+    }
+  ],
+  // test 31
+  [
+    {
+      "goalId": "testS5",
+      "transactionType": "Partial Switch",
+      "transactionDetails": [
+        {
+          "ticker": "DGRO",
+          "direction": "SELL",
+          "value": "566.75",
+          "units": "16.02799774"
+        },
+        {
+          "ticker": "CASH",
+          "direction": "SELL",
+          "value": "0.93",
+          "units": "0.93"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "SELL",
+          "value": "798.1",
+          "units": "6.82895525"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "SELL",
+          "value": "62.46",
+          "units": "0.45674589"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "SELL",
+          "value": "61.75",
+          "units": "0.33614589"
+        },
+        {
+          "ticker": "VTI",
+          "direction": "SELL",
+          "value": "661.24",
+          "units": "4.66285875"
+        },
+        {
+          "ticker": "VWO",
+          "direction": "SELL",
+          "value": "62.44",
+          "units": "1.78604119"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "SELL",
+          "value": "523.19",
+          "units": "4.68934301"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "SELL",
+          "value": "263.14",
+          "units": "4.14328452"
+        }
+      ]
+    }
+  ],
+  // test 32
+  [
+    {
+        "goalId": "testR6",
+        "transactionType": "Big Redemption",
+        "transactionDetails": [
+            {
+                "ticker": "VWO",
+                "direction": "SELL",
+                "units": "1.90532037",
+                "value": "66.61"
+            },
+            {
+                "ticker": "AGG",
+                "direction": "SELL",
+                "units": "7.28424745",
+                "value": "851.31"
+            },
+            {
+                "ticker": "VTI",
+                "direction": "SELL",
+                "units": "4.97376772",
+                "value": "705.33",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding number of units",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+            {
+                "ticker": "MUB",
+                "direction": "SELL",
+                "units": "5.00197186",
+                "value": "558.07"
+            },
+            {
+                "ticker": "EFAV",
+                "direction": "SELL",
+                "units": "4.4194615",
+                "value": "280.68"
+            },
+            {
+                "ticker": "DGRO",
+                "direction": "SELL",
+                "units": "17.09643665",
+                "value": "604.53"
+            },
+            {
+                "ticker": "IWP",
+                "direction": "SELL",
+                "units": "0.48716636",
+                "value": "66.62"
+            },
+            {
+                "ticker": "IVW",
+                "direction": "SELL",
+                "units": "0.35851932",
+                "value": "65.86"
+            },
+            {
+                "ticker": "CASH",
+                "direction": "SELL",
+                "units": "0.99",
+                "value": "0.99"
+            }
+        ]
+    }
+],
+  // test 33
+  [
+        {
+            "goalId": "testS6",
+            "transactionType": "Partial Switch",
+            "transactionDetails": [
+                {
+                    "ticker": "VWO",
+                    "direction": "SELL",
+                    "units": "1.90532037",
+                    "value": "66.61"
+                },
+                {
+                    "ticker": "AGG",
+                    "direction": "SELL",
+                    "units": "7.28424745",
+                    "value": "851.31"
+                },
+                {
+                    "ticker": "VTI",
+                    "direction": "SELL",
+                    "units": "4.97376772",
+                    "value": "705.33",
+                    "error": {
+                        "message": "Cannot trade this ticker because it breaches the minimum holding number of units",
+                        "code": "MIN_HOLDING_VIOLATION"
+                    }
+                },
+                {
+                    "ticker": "MUB",
+                    "direction": "SELL",
+                    "units": "5.00197186",
+                    "value": "558.07"
+                },
+                {
+                    "ticker": "EFAV",
+                    "direction": "SELL",
+                    "units": "4.4194615",
+                    "value": "280.68"
+                },
+                {
+                    "ticker": "DGRO",
+                    "direction": "SELL",
+                    "units": "17.09643665",
+                    "value": "604.53"
+                },
+                {
+                    "ticker": "IWP",
+                    "direction": "SELL",
+                    "units": "0.48716636",
+                    "value": "66.62"
+                },
+                {
+                    "ticker": "IVW",
+                    "direction": "SELL",
+                    "units": "0.35851932",
+                    "value": "65.86"
+                },
+                {
+                    "ticker": "CASH",
+                    "direction": "SELL",
+                    "units": "0.99",
+                    "value": "0.99"
+                }
+            ]
+        }
+    ],
+  // test 34
+  [
+    {
+      "goalId": "testR7",
+      "transactionType": "Big Redemption",
+      "transactionDetails": [
+        {
+                "ticker": "VTI",
+                "direction": "SELL",
+                "units": "5.01635992",
+                "value": "711.37",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding number of units",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+            {
+                "ticker": "EFAV",
+                "direction": "SELL",
+                "units": "4.45740828",
+                "value": "283.09",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding number of units",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+        {
+          "ticker": "CASH",
+          "direction": "SELL",
+          "value": "1",
+          "units": "1"
+        },
+        {
+          "ticker": "VWO",
+          "direction": "SELL",
+          "value": "67.18",
+          "units": "1.921591"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "SELL",
+          "value": "66.43",
+          "units": "0.36160716"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "SELL",
+          "value": "562.86",
+          "units": "5.04488653"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "SELL",
+          "value": "609.71",
+          "units": "17.24292986"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "SELL",
+          "value": "858.6",
+          "units": "7.34662445"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "SELL",
+          "value": "67.19",
+          "units": "0.49133455"
+        }
+      ]
+    }
+  ],
+  // test 35
+  [
+    {
+      "goalId": "testS7",
+      "transactionType": "Partial Switch",
+      "transactionDetails": [
+        {
+                "ticker": "VTI",
+                "direction": "SELL",
+                "units": "5.01635992",
+                "value": "711.37",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding number of units",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+            {
+                "ticker": "EFAV",
+                "direction": "SELL",
+                "units": "4.45740828",
+                "value": "283.09",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding number of units",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+        {
+          "ticker": "CASH",
+          "direction": "SELL",
+          "value": "1",
+          "units": "1"
+        },
+        {
+          "ticker": "VWO",
+          "direction": "SELL",
+          "value": "67.18",
+          "units": "1.921591"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "SELL",
+          "value": "66.43",
+          "units": "0.36160716"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "SELL",
+          "value": "562.86",
+          "units": "5.04488653"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "SELL",
+          "value": "609.71",
+          "units": "17.24292986"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "SELL",
+          "value": "858.6",
+          "units": "7.34662445"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "SELL",
+          "value": "67.19",
+          "units": "0.49133455"
+        }
+      ]
+    }
+  ],
+  // test 36
+  [
+    {
+      "goalId": "testR8",
+      "transactionType": "Full Redemption",
+      "transactionDetails": [
+        {
+          "ticker": "VTI",
+          "direction": "SELL",
+          "value": "711.37",
+          "units": "5.01636801"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "SELL",
+          "value": "609.72",
+          "units": "17.24309048"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "SELL",
+          "value": "67.19",
+          "units": "0.49134517"
+        },
+        {
+          "ticker": "VWO",
+          "direction": "SELL",
+          "value": "67.18",
+          "units": "1.921591"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "SELL",
+          "value": "66.43",
+          "units": "0.36160716"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "SELL",
+          "value": "283.09",
+          "units": "4.45741521"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "SELL",
+          "value": "858.6",
+          "units": "7.34665819"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "SELL",
+          "value": "562.86",
+          "units": "5.04488653"
+        },
+        {
+          "ticker": "CASH",
+          "direction": "SELL",
+          "value": "1",
+          "units": "1"
+        }
+      ]
+    }
+  ],
+  // test 37
+  [
+    {
+      "goalId": "testS8",
+      "transactionType": "Full Switch",
+      "transactionDetails": [
+        {
+          "ticker": "VTI",
+          "direction": "SELL",
+          "value": "711.37",
+          "units": "5.01636801"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "SELL",
+          "value": "609.72",
+          "units": "17.24309048"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "SELL",
+          "value": "67.19",
+          "units": "0.49134517"
+        },
+        {
+          "ticker": "VWO",
+          "direction": "SELL",
+          "value": "67.18",
+          "units": "1.921591"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "SELL",
+          "value": "66.43",
+          "units": "0.36160716"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "SELL",
+          "value": "283.09",
+          "units": "4.45741521"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "SELL",
+          "value": "858.6",
+          "units": "7.34665819"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "SELL",
+          "value": "562.86",
+          "units": "5.04488653"
+        },
+        {
+          "ticker": "CASH",
+          "direction": "SELL",
+          "value": "1",
+          "units": "1"
+        }
+      ]
+    }
+  ],
+  // test 38
+  {
+    "message": "Redemption Amount must be smaller or equal to portfolio value",
+    "error": "Bad Request",
+    "statusCode": 400
+  },
+  // test 39
+  {
+    "message": "Redemption Amount must be smaller or equal to portfolio value",
+    "error": "Bad Request",
+    "statusCode": 400
+  },
+  // test 40
+  [
+    {
+      "goalId": "testR10",
+      "transactionType": "Small Redemption",
+      "transactionDetails": [
+        {
+          "ticker": "AGG",
+          "direction": "SELL",
+          "value": "260.07",
+          "units": "2.22529"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "SELL",
+          "value": "170.49",
+          "units": "1.5281"
+        },
+        {
+          "ticker": "VWO",
+          "direction": "SELL",
+          "value": "20.35",
+          "units": "0.58209"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "SELL",
+          "value": "85.75",
+          "units": "1.35018"
+        },
+        {
+          "ticker": "CASH_USD",
+          "direction": "SELL",
+          "value": "22.72",
+          "units": "22.72"
+        },
+        {
+          "ticker": "VTI",
+          "direction": "SELL",
+          "value": "215.47",
+          "units": "1.51943"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "SELL",
+          "value": "184.68",
+          "units": "5.22285"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "SELL",
+          "value": "20.35",
+          "units": "0.14881"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "SELL",
+          "value": "20.12",
+          "units": "0.10953"
+        }
+      ]
+    }
+  ],
+  // test 41
+  [
+    {
+      "goalId": "testS10",
+      "transactionType": "Partial Switch",
+      "transactionDetails": [
+        {
+          "ticker": "AGG",
+          "direction": "SELL",
+          "value": "260.07",
+          "units": "2.22529"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "SELL",
+          "value": "170.49",
+          "units": "1.5281"
+        },
+        {
+          "ticker": "VWO",
+          "direction": "SELL",
+          "value": "20.35",
+          "units": "0.58209"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "SELL",
+          "value": "85.75",
+          "units": "1.35018"
+        },
+        {
+          "ticker": "CASH_USD",
+          "direction": "SELL",
+          "value": "22.72",
+          "units": "22.72"
+        },
+        {
+          "ticker": "VTI",
+          "direction": "SELL",
+          "value": "215.47",
+          "units": "1.51943"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "SELL",
+          "value": "184.68",
+          "units": "5.22285"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "SELL",
+          "value": "20.35",
+          "units": "0.14881"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "SELL",
+          "value": "20.12",
+          "units": "0.10953"
+        }
+      ]
+    }
+  ],
+  // test 42
+  [
+    {
+      "goalId": "testR11",
+      "transactionType": "Small Redemption",
+      "transactionDetails": [
+        {
+                "ticker": "DGRO",
+                "direction": "SELL",
+                "units": "0.05147",
+                "value": "1.82",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum redemption amount",
+                    "code": "MIN_REDEMPTION_VIOLATION"
+                }
+            },
+            {
+                "ticker": "MUB",
+                "direction": "SELL",
+                "units": "0.01506",
+                "value": "1.68",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum redemption amount",
+                    "code": "MIN_REDEMPTION_VIOLATION"
+                }
+            },
+            {
+                "ticker": "IVW",
+                "direction": "SELL",
+                "units": "0.00109",
+                "value": "0.2",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum redemption amount",
+                    "code": "MIN_REDEMPTION_VIOLATION"
+                }
+            },
+            {
+                "ticker": "EFAV",
+                "direction": "SELL",
+                "units": "0.01338",
+                "value": "0.85",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum redemption amount",
+                    "code": "MIN_REDEMPTION_VIOLATION"
+                }
+            },
+        {
+          "ticker": "CASH_USD",
+          "direction": "SELL",
+          "value": "0.22",
+          "units": "0.22"
+        },
+        {
+                "ticker": "VTI",
+                "direction": "SELL",
+                "units": "0.01495",
+                "value": "2.12",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum redemption amount",
+                    "code": "MIN_REDEMPTION_VIOLATION"
+                }
+            },
+            {
+                "ticker": "IWP",
+                "direction": "SELL",
+                "units": "0.00146",
+                "value": "0.2",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum redemption amount",
+                    "code": "MIN_REDEMPTION_VIOLATION"
+                }
+            },
+            {
+                "ticker": "VWO",
+                "direction": "SELL",
+                "units": "0.00572",
+                "value": "0.2",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum redemption amount",
+                    "code": "MIN_REDEMPTION_VIOLATION"
+                }
+            },
+            {
+                "ticker": "AGG",
+                "direction": "SELL",
+                "units": "0.0219",
+                "value": "2.56",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum redemption amount",
+                    "code": "MIN_REDEMPTION_VIOLATION"
+                }
+            }
+      ]
+    }
+  ],
+  // test 43
+  [
+    {
+      "goalId": "testS11",
+      "transactionType": "Partial Switch",
+      "transactionDetails": [
+        {
+          "ticker": "VTI",
+          "direction": "SELL",
+          "value": "0.11",
+          "units": "0.00078"
+        },
+        {
+          "ticker": "MUB",
+          "direction": "SELL",
+          "value": "0.09",
+          "units": "0.00081"
+        },
+        {
+          "ticker": "AGG",
+          "direction": "SELL",
+          "value": "0.13",
+          "units": "0.00111"
+        },
+        {
+          "ticker": "DGRO",
+          "direction": "SELL",
+          "value": "0.09",
+          "units": "0.00255"
+        },
+        {
+          "ticker": "EFAV",
+          "direction": "SELL",
+          "value": "0.04",
+          "units": "0.00063"
+        },
+        {
+          "ticker": "IWP",
+          "direction": "SELL",
+          "value": "0.01",
+          "units": "0.00007"
+        },
+        {
+          "ticker": "VWO",
+          "direction": "SELL",
+          "value": "0.01",
+          "units": "0.00029"
+        },
+        {
+          "ticker": "IVW",
+          "direction": "SELL",
+          "value": "0.01",
+          "units": "0.00005"
+        },
+        {
+          "ticker": "CASH_USD",
+          "direction": "SELL",
+          "value": "0.01",
+          "units": "0.01"
+        }
+      ]
+    }
+  ],
+  // test 44
+  [
+    {
+      "goalId": "testR12",
+      "transactionType": "Big Redemption",
+      "transactionDetails": [
+        {
+                "ticker": "AGG",
+                "direction": "SELL",
+                "units": "7.34577",
+                "value": "858.5",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding amount",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+        {
+                "ticker": "CASH_USD",
+                "direction": "SELL",
+                "units": "75",
+                "value": "75"
+            },
+        {
+                "ticker": "VTI",
+                "direction": "SELL",
+                "units": "5.01573",
+                "value": "711.28",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding amount",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+            {
+                "ticker": "VWO",
+                "direction": "SELL",
+                "units": "1.92134",
+                "value": "67.17",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding amount",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+        {
+                "ticker": "IVW",
+                "direction": "SELL",
+                "units": "0.36151",
+                "value": "66.41",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding amount",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+        {
+                "ticker": "DGRO",
+                "direction": "SELL",
+                "units": "17.24067",
+                "value": "609.63",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding amount",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+        {
+                "ticker": "MUB",
+                "direction": "SELL",
+                "units": "5.04419",
+                "value": "562.78",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding amount",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+            {
+                "ticker": "EFAV",
+                "direction": "SELL",
+                "units": "4.45678",
+                "value": "283.05",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding amount",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+            {
+                "ticker": "IWP",
+                "direction": "SELL",
+                "units": "0.49126",
+                "value": "67.18",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding amount",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            }
+      ]
+    }
+  ],
+  // test 45
+  [
+    {
+        "goalId": "testS12",
+        "transactionType": "Partial Switch",
+        "transactionDetails": [
+            {
+                "ticker": "AGG",
+                "direction": "SELL",
+                "units": "7.34577",
+                "value": "858.5",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding amount",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+            {
+                "ticker": "CASH_USD",
+                "direction": "SELL",
+                "units": "75",
+                "value": "75"
+            },
+            {
+                "ticker": "VTI",
+                "direction": "SELL",
+                "units": "5.01573",
+                "value": "711.28",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding amount",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+            {
+                "ticker": "VWO",
+                "direction": "SELL",
+                "units": "1.92134",
+                "value": "67.17",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding amount",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+            {
+                "ticker": "IVW",
+                "direction": "SELL",
+                "units": "0.36151",
+                "value": "66.41",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding amount",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+            {
+                "ticker": "DGRO",
+                "direction": "SELL",
+                "units": "17.24067",
+                "value": "609.63",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding amount",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+            {
+                "ticker": "MUB",
+                "direction": "SELL",
+                "units": "5.04419",
+                "value": "562.78",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding amount",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+            {
+                "ticker": "EFAV",
+                "direction": "SELL",
+                "units": "4.45678",
+                "value": "283.05",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding amount",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            },
+            {
+                "ticker": "IWP",
+                "direction": "SELL",
+                "units": "0.49126",
+                "value": "67.18",
+                "error": {
+                    "message": "Cannot trade this ticker because it breaches the minimum holding amount",
+                    "code": "MIN_HOLDING_VIOLATION"
+                }
+            }
+        ]
+    }
+],
+  // test 46
+  {
+    "message": "Goal details are missing to process Redemption order.",
+    "error": "Bad Request",
+    "statusCode": 400
+},
+  // test 47
+  {
+    "message": "Goal details are missing to process Switch order.",
+    "error": "Bad Request",
+    "statusCode": 400
+},
+  // test 48
+  [
+    {
+        "goalId": "testR14",
+        "transactionType": "Small Redemption",
+        "transactionDetails": [
+            {
+                "ticker": "CASH_USD",
+                "direction": "SELL",
+                "units": "11.36",
+                "value": "11.36"
+            },
+            {
+                "ticker": "VTI",
+                "direction": "SELL",
+                "units": "0.75975",
+                "value": "107.74"
+            },
+            {
+                "ticker": "IWP",
+                "direction": "SELL",
+                "units": "0.07444",
+                "value": "10.18"
+            },
+            {
+                "ticker": "IVW",
+                "direction": "SELL",
+                "units": "0.05482",
+                "value": "10.07"
+            },
+            {
+                "ticker": "AGG",
+                "direction": "SELL",
+                "units": "1.1126",
+                "value": "130.03"
+            },
+            {
+                "ticker": "MUB",
+                "direction": "SELL",
+                "units": "0.764",
+                "value": "85.24"
+            },
+            {
+                "ticker": "VWO",
+                "direction": "SELL",
+                "units": "0.2909",
+                "value": "10.17"
+            },
+            {
+                "ticker": "EFAV",
+                "direction": "SELL",
+                "units": "0.67501",
+                "value": "42.87"
+            },
+            {
+                "ticker": "DGRO",
+                "direction": "SELL",
+                "units": "2.61143",
+                "value": "92.34"
+            }
+        ]
+    }
+],
+  // test 49
+  [
+    {
+        "goalId": "testS14",
+        "transactionType": "Partial Switch",
+        "transactionDetails": [
+            {
+                "ticker": "CASH_USD",
+                "direction": "SELL",
+                "units": "11.36",
+                "value": "11.36"
+            },
+            {
+                "ticker": "VTI",
+                "direction": "SELL",
+                "units": "0.75975",
+                "value": "107.74"
+            },
+            {
+                "ticker": "IWP",
+                "direction": "SELL",
+                "units": "0.07444",
+                "value": "10.18"
+            },
+            {
+                "ticker": "IVW",
+                "direction": "SELL",
+                "units": "0.05482",
+                "value": "10.07"
+            },
+            {
+                "ticker": "AGG",
+                "direction": "SELL",
+                "units": "1.1126",
+                "value": "130.03"
+            },
+            {
+                "ticker": "MUB",
+                "direction": "SELL",
+                "units": "0.764",
+                "value": "85.24"
+            },
+            {
+                "ticker": "VWO",
+                "direction": "SELL",
+                "units": "0.2909",
+                "value": "10.17"
+            },
+            {
+                "ticker": "EFAV",
+                "direction": "SELL",
+                "units": "0.67501",
+                "value": "42.87"
+            },
+            {
+                "ticker": "DGRO",
+                "direction": "SELL",
+                "units": "2.61143",
+                "value": "92.34"
+            }
+        ]
+    }
+],
+  // test 50
+  {
+    "message": "Model portfolio MP1 weight sum must be equal to 1",
+    "error": "Bad Request",
+    "statusCode": 400
+},
+  // test 51
+  {
+    "message": "Volatility buffer must be a number between 0 and 1",
+    "error": "Bad Request",
+    "statusCode": 400
+},
+  // test 52
+  {
+    "message": "Ticker VTI contributionFee is invalid: value must not be greater than 1",
+    "error": "Bad Request",
+    "statusCode": 400
+},
+  // test 53
+  {
+    "message": "Ticker VTI contributionFee is invalid: value must not be greater than 1",
+    "error": "Bad Request",
+    "statusCode": 400
+}
+]
