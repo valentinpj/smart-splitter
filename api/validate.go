@@ -104,7 +104,7 @@ func validateHolding(h models.Holding, amtP, unitP int) error {
 			return err
 		}
 	}
-	return validateRateField(h.ContributionFee, "contributionFee ("+h.Ticker+")")
+	return validateRateField(h.TransactionFee, "transactionFee ("+h.Ticker+")")
 }
 
 func validateModelItem(mp models.ModelItem, amtP, unitP int) error {
@@ -138,7 +138,7 @@ func validateModelItem(mp models.ModelItem, amtP, unitP int) error {
 			return err
 		}
 	}
-	return validateRateField(mp.ContributionFee, "contributionFee ("+mp.Ticker+")")
+	return validateRateField(mp.TransactionFee, "transactionFee ("+mp.Ticker+")")
 }
 
 // validateAmountField validates a decimal amount or unit quantity.

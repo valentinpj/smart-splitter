@@ -31,7 +31,7 @@ type Holding struct {
 	MinRedemptionUnits        string `json:"minRedemptionUnits"`
 	MinHoldingAmt             string `json:"minHoldingAmt"`
 	MinHoldingUnits           string `json:"minHoldingUnits"`
-	ContributionFee           string `json:"contributionFee"`
+	TransactionFee            string `json:"transactionFee"`
 }
 
 type ModelItem struct {
@@ -46,7 +46,7 @@ type ModelItem struct {
 	MinRedemptionUnits        string `json:"minRedemptionUnits"`
 	MinHoldingAmt             string `json:"minHoldingAmt"`
 	MinHoldingUnits           string `json:"minHoldingUnits"`
-	ContributionFee           string `json:"contributionFee"`
+	TransactionFee            string `json:"transactionFee"`
 }
 
 // --- Response types ---
