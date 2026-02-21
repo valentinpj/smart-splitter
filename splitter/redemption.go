@@ -15,7 +15,7 @@ import (
 //             sorted ascending by value to maximise the count of full redemptions within budget.
 //   Phase 2 — Remaining budget is distributed across model-portfolio products proportionally
 //             to how overweight each one is relative to its post-redemption model target.
-func ProcessRedemption(goal models.Goal, amountPrec, unitPrec int) models.GoalResult {
+func ProcessRedemption(goal models.Goal, amountPrec, unitPrec int, volatilityBuffer string) models.GoalResult {
 	orderAmount, _ := decimal.NewFromString(goal.OrderAmount)
 
 	// Build holdings map: ticker -> Holding (only products with positive value)
@@ -176,9 +176,35 @@ func ProcessRedemption(goal models.Goal, amountPrec, unitPrec int) models.GoalRe
 
 	return models.GoalResult{
 		GoalID:             goal.GoalID,
-		TransactionType:    goal.OrderType,
+		TransactionType:    redemptionType(orderAmount, vTotal, volatilityBuffer),
 		TransactionDetails: details,
 	}
+}
+
+// redemptionType determines the redemption transaction type label based on the
+// order amount relative to the total goal value and the optional volatility buffer.
+//
+// With volatilityBuffer:
+//   orderAmount < vTotal*(1-buf)  → "Small Redemption"
+//   orderAmount < vTotal           → "Big Redemption"
+//   otherwise                      → "Full Redemption"
+//
+// Without volatilityBuffer:
+//   orderAmount < vTotal           → "Partial Redemption"
+//   otherwise                      → "Full Redemption"
+func redemptionType(orderAmount, vTotal decimal.Decimal, volatilityBuffer string) string {
+	if orderAmount.GreaterThanOrEqual(vTotal) {
+		return "Full Redemption"
+	}
+	vBuf, _ := decimal.NewFromString(volatilityBuffer)
+	if vBuf.IsPositive() {
+		threshold := vTotal.Mul(decimal.NewFromInt(1).Sub(vBuf))
+		if orderAmount.LessThan(threshold) {
+			return "Small Redemption"
+		}
+		return "Big Redemption"
+	}
+	return "Partial Redemption"
 }
 
 // checkRedemptionMinimums validates both the minimum redemption size and the

@@ -33,7 +33,7 @@ func HandleSplit(w http.ResponseWriter, r *http.Request) {
 		case "investment":
 			results = append(results, splitter.ProcessInvestment(goal, amountPrec, unitPrec))
 		case "redemption":
-			results = append(results, splitter.ProcessRedemption(goal, amountPrec, unitPrec))
+			results = append(results, splitter.ProcessRedemption(goal, amountPrec, unitPrec, req.VolatilityBuffer))
 		default:
 			writeError(w, "Unsupported order type: "+goal.OrderType, "Bad Request", http.StatusBadRequest)
 			return
