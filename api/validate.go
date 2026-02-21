@@ -63,6 +63,17 @@ func validateGoal(g models.Goal, amtP, unitP int) error {
 			return err
 		}
 	}
+	if strings.ToLower(g.OrderType) == "redemption" {
+		goalValue := decZero
+		for _, h := range g.GoalDetails {
+			v, _ := decimal.NewFromString(h.Value)
+			goalValue = goalValue.Add(v)
+		}
+		orderAmount, _ := decimal.NewFromString(g.OrderAmount)
+		if orderAmount.GreaterThan(goalValue) {
+			return fmt.Errorf("orderAmount (%s) cannot be greater than the total goal value (%s)", g.OrderAmount, goalValue.String())
+		}
+	}
 	if len(g.ModelPortfolioDetails) == 0 {
 		return fmt.Errorf("modelPortfolioDetails must not be empty")
 	}
