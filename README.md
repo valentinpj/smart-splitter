@@ -31,7 +31,7 @@ Content-Type: `application/json`
 |-------|------|------------|-------------|
 | `amountDecimalPrecision` | string (integer) | ≥ 0 | Number of decimal places for all monetary amounts |
 | `unitDecimalPrecision` | string (integer) | ≥ 0 | Number of decimal places for all unit quantities |
-| `volatilityBuffer` | string (decimal) | ≥ 0 and < 1 | Reserved for redemption (not used in splitting logic) |
+| `volatilityBuffer` | string (decimal) | Optional; ≥ 0 and < 1 | When present, used to classify the redemption transaction type (see [Redemption transaction type](#redemption-transaction-type)) |
 | `goals` | array | Non-empty | One or more goals to process (each processed independently) |
 
 ### Goal object
@@ -40,7 +40,7 @@ Content-Type: `application/json`
 |-------|------|------------|-------------|
 | `goalId` | string | Non-empty | Unique identifier for the goal |
 | `orderType` | string | `"Investment"` or `"Redemption"` | Type of order |
-| `orderAmount` | string (decimal) | > 0, ≤ `amountDecimalPrecision` d.p. | Gross amount to invest or redeem |
+| `orderAmount` | string (decimal) | > 0, ≤ `amountDecimalPrecision` d.p.; for Redemption: ≤ total goal value | Gross amount to invest or redeem |
 | `modelPortfolioId` | string | Non-empty | Identifier of the attached model portfolio |
 | `goalDetails` | array of holdings | Optional for Investment; **required and non-empty for Redemption** | Current holdings in the goal |
 | `modelPortfolioDetails` | array of model items | Non-empty | Target model portfolio |
@@ -85,7 +85,7 @@ Returns an array of goal results (one per goal in the request).
 [
   {
     "goalId": "string",
-    "transactionType": "Investment" | "Redemption",
+    "transactionType": "Investment" | "Partial Redemption" | "Full Redemption" | "Small Redemption" | "Big Redemption",
     "transactionDetails": [
       {
         "ticker": "string",
@@ -183,6 +183,36 @@ redemption_i = (ideal_i / Σ ideal_j) × remaining_budget
 Truncation and unit calculation follow the same rules as investment.
 
 Output order: Phase 1 products appear first (ascending value), followed by `modelPortfolioDetails` products in their input order.
+
+---
+
+## Redemption transaction type
+
+The `transactionType` field in the response is determined by comparing `orderAmount` against the total goal value (`V_total = Σ goalDetails[i].value`) and the optional `volatilityBuffer`.
+
+### Without `volatilityBuffer`
+
+| Condition | `transactionType` |
+|-----------|-------------------|
+| `orderAmount < V_total` | `"Partial Redemption"` |
+| `orderAmount = V_total` | `"Full Redemption"` |
+
+### With `volatilityBuffer`
+
+Let `threshold = V_total × (1 − volatilityBuffer)`.
+
+| Condition | `transactionType` |
+|-----------|-------------------|
+| `orderAmount < threshold` | `"Small Redemption"` |
+| `threshold ≤ orderAmount < V_total` | `"Big Redemption"` |
+| `orderAmount = V_total` | `"Full Redemption"` |
+
+**Example:** goal value = $10.00, `volatilityBuffer` = `"0.03"` → `threshold` = $9.70.
+- `orderAmount` < $9.70 → `"Small Redemption"`
+- $9.70 ≤ `orderAmount` < $10.00 → `"Big Redemption"`
+- `orderAmount` = $10.00 → `"Full Redemption"`
+
+> **Note:** `orderAmount` strictly greater than `V_total` is rejected with HTTP 400.
 
 ---
 
