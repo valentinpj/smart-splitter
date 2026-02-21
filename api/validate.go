@@ -93,7 +93,7 @@ func validateHolding(h models.Holding, amtP, unitP int) error {
 		{h.MinRedemptionAmt, "minRedemptionAmt (" + h.Ticker + ")"},
 		{h.MinHoldingAmt, "minHoldingAmt (" + h.Ticker + ")"},
 	} {
-		if err := validateAmountField(f.v, f.name, false, amtP); err != nil {
+		if err := validateOptionalAmountField(f.v, f.name, amtP); err != nil {
 			return err
 		}
 	}
@@ -103,11 +103,11 @@ func validateHolding(h models.Holding, amtP, unitP int) error {
 		{h.MinRedemptionUnits, "minRedemptionUnits (" + h.Ticker + ")"},
 		{h.MinHoldingUnits, "minHoldingUnits (" + h.Ticker + ")"},
 	} {
-		if err := validateAmountField(f.v, f.name, false, unitP); err != nil {
+		if err := validateOptionalAmountField(f.v, f.name, unitP); err != nil {
 			return err
 		}
 	}
-	return validateRateField(h.TransactionFee, "transactionFee ("+h.Ticker+")")
+	return validateOptionalRateField(h.TransactionFee, "transactionFee ("+h.Ticker+")")
 }
 
 func validateModelItem(mp models.ModelItem, amtP, unitP int) error {
@@ -127,7 +127,7 @@ func validateModelItem(mp models.ModelItem, amtP, unitP int) error {
 		{mp.MinRedemptionAmt, "minRedemptionAmt (" + mp.Ticker + ")"},
 		{mp.MinHoldingAmt, "minHoldingAmt (" + mp.Ticker + ")"},
 	} {
-		if err := validateAmountField(f.v, f.name, false, amtP); err != nil {
+		if err := validateOptionalAmountField(f.v, f.name, amtP); err != nil {
 			return err
 		}
 	}
@@ -137,11 +137,11 @@ func validateModelItem(mp models.ModelItem, amtP, unitP int) error {
 		{mp.MinRedemptionUnits, "minRedemptionUnits (" + mp.Ticker + ")"},
 		{mp.MinHoldingUnits, "minHoldingUnits (" + mp.Ticker + ")"},
 	} {
-		if err := validateAmountField(f.v, f.name, false, unitP); err != nil {
+		if err := validateOptionalAmountField(f.v, f.name, unitP); err != nil {
 			return err
 		}
 	}
-	return validateRateField(mp.TransactionFee, "transactionFee ("+mp.Ticker+")")
+	return validateOptionalRateField(mp.TransactionFee, "transactionFee ("+mp.Ticker+")")
 }
 
 // validateAmountField validates a decimal amount or unit quantity.
@@ -181,6 +181,24 @@ func validateRateField(s, field string) error {
 		return fmt.Errorf("%s: must be a number >= 0 and < 1", field)
 	}
 	return nil
+}
+
+// validateOptionalAmountField validates a non-negative decimal with at most maxPrec decimal places,
+// but treats an empty or absent field as valid (defaults to 0).
+func validateOptionalAmountField(s, field string, maxPrec int) error {
+	if strings.TrimSpace(s) == "" {
+		return nil
+	}
+	return validateAmountField(s, field, false, maxPrec)
+}
+
+// validateOptionalRateField validates a decimal in [0, 1), but treats an empty or absent
+// field as valid (defaults to 0).
+func validateOptionalRateField(s, field string) error {
+	if strings.TrimSpace(s) == "" {
+		return nil
+	}
+	return validateRateField(s, field)
 }
 
 // parseNonNegInt parses s as a non-negative integer.
