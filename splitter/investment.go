@@ -59,11 +59,24 @@ func ProcessInvestment(goal models.Goal, amountPrec, unitPrec int) models.GoalRe
 		totalIdeal = orderAmount
 	}
 
+	// Apply transaction fee adjustment: to achieve a net investment equal to ideal_i,
+	// the gross amount must be ideal_i / (1 - fee_i).
+	// We then scale so that all gross amounts sum to orderAmount.
+	one := decimal.NewFromInt(1)
+	feeAdjusted := make([]decimal.Decimal, len(allocs))
+	totalFeeAdjusted := decimal.Zero
+	for i, a := range allocs {
+		fee, _ := decimal.NewFromString(a.mp.TransactionFee)
+		divisor := one.Sub(fee) // 1 - fee; fee is validated < 1, so divisor > 0
+		feeAdjusted[i] = a.ideal.Div(divisor)
+		totalFeeAdjusted = totalFeeAdjusted.Add(feeAdjusted[i])
+	}
+
 	// Scale each allocation so that gross amounts sum to orderAmount, then check minimums.
 	var details []models.TransactionDetail
-	for _, a := range allocs {
-		// gross_i = (ideal_i / totalIdeal) * orderAmount, truncated to amountDecimalPrecision
-		gross := a.ideal.Div(totalIdeal).Mul(orderAmount).Truncate(int32(amountPrec))
+	for i, a := range allocs {
+		// gross_i = (feeAdjusted_i / totalFeeAdjusted) * orderAmount, truncated to amountDecimalPrecision
+		gross := feeAdjusted[i].Div(totalFeeAdjusted).Mul(orderAmount).Truncate(int32(amountPrec))
 
 		// units = gross / marketPrice, truncated to unitDecimalPrecision
 		price, _ := decimal.NewFromString(a.mp.MarketPrice)

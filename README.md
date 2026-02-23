@@ -120,7 +120,11 @@ Returns an array of goal results (one per goal in the request).
 
 ## Splitting logic
 
-All amounts are processed in exact decimal arithmetic. The `orderAmount` is always the **gross** amount: for investments it is what the client sends; for redemptions it is what gets sold from the portfolio. The broker deducts the `transactionFee` from proceeds internally — this does not affect the splitting calculation.
+All amounts are processed in exact decimal arithmetic. The `orderAmount` is always the **gross** amount: for investments it is what the client sends; for redemptions it is what gets sold from the portfolio.
+
+The `transactionFee` (a rate in [0, 1)) is applied per product:
+- **Investment**: the fee reduces the net amount that actually enters the portfolio. The gross allocation is inflated by `1 / (1 − fee)` so that the net investment hits the shortfall target (e.g. shortfall $10, fee 1% → gross = $10 / 0.99 ≈ $10.10).
+- **Redemption**: the fee reduces the proceeds from the sale but does not affect the splitting logic or minimum-requirement checks.
 
 ### Investment
 
@@ -138,21 +142,27 @@ All amounts are processed in exact decimal arithmetic. The `orderAmount` is alwa
    ```
    Products already at or above their model weight receive 0.
 
-3. Scale the ideals so that gross allocations sum to `orderAmount`:
+3. Apply the transaction fee to convert each net shortfall into the required gross allocation:
    ```
-   gross_i = (ideal_i / Σ ideal_j) × orderAmount
+   feeAdjusted_i = ideal_i / (1 − transactionFee_i)
    ```
-   *Fallback:* if all ideals are 0 (every product already at or above model weight), distribute pro-rata by model weight.
+   A product with no fee (or fee = 0) is unchanged. This ensures the net amount invested after the broker deducts its fee equals the shortfall target.
 
-4. Truncate `gross_i` to `amountDecimalPrecision` decimal places (round down).
+4. Scale the fee-adjusted ideals so that gross allocations sum to `orderAmount`:
+   ```
+   gross_i = (feeAdjusted_i / Σ feeAdjusted_j) × orderAmount
+   ```
+   *Fallback:* if all ideals are 0 (every product already at or above model weight), distribute pro-rata by model weight (fee adjustment still applied).
 
-5. Compute `units_i = gross_i / marketPrice_i`, truncated down to `unitDecimalPrecision` decimal places.
+5. Truncate `gross_i` to `amountDecimalPrecision` decimal places (round down).
 
-6. Check minimum requirements and flag violations (see below).
+6. Compute `units_i = gross_i / marketPrice_i`, truncated down to `unitDecimalPrecision` decimal places. Represents the approximate units traded before the broker deducts its fee.
 
-7. Output preserves the order of `modelPortfolioDetails`. Products with `weight = 0` (e.g. CASH) are excluded from the output.
+7. Check minimum requirements and flag violations (see below).
 
-> **Note:** step 3 is a placeholder for a future call to the `generalsplitter` external API, which will eliminate rounding residuals entirely.
+8. Output preserves the order of `modelPortfolioDetails`. Products with `weight = 0` (e.g. CASH) are excluded from the output.
+
+> **Note:** step 4 is a placeholder for a future call to the `generalsplitter` external API, which will eliminate rounding residuals entirely.
 
 ### Redemption
 
