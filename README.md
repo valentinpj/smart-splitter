@@ -162,11 +162,23 @@ The `transactionFee` (a rate in [0, 1)) is applied per product:
 
 6. Compute `units_i = gross_i / marketPrice_i`, truncated down to `unitDecimalPrecision` decimal places. Represents the approximate units traded before the broker deducts its fee.
 
-7. Check minimum requirements and flag violations (see below).
+7. **Repair step** — attempt to clear minimum violations before flagging them:
+   - For each product with a violation, compute the minimum gross needed to clear it:
+     ```
+     requiredNet_i  = max(minAmt_i, minUnits_i × marketPrice_i)
+     requiredGross_i = ⌈requiredNet_i / (1 − transactionFee_i)⌉  (rounded UP to amountDecimalPrecision)
+     bump_i = requiredGross_i − gross_i
+     ```
+   - Sort violations by `bump_i` ascending (cheapest to fix first).
+   - For each non-violating product j, compute available slack: `slack_j = gross_j − requiredGross_j`.
+   - Greedily apply bumps from cheapest to most expensive while total slack allows. If slack runs out, remaining violations are left as-is.
+   - Reduce non-violating products pro-rata by their slack to fund the bumps, keeping the total equal to `orderAmount`.
 
-8. Output preserves the order of `modelPortfolioDetails`. Products with `weight = 0` (e.g. CASH) are excluded from the output.
+8. Check remaining minimum requirements and flag any unresolved violations (see [Minimum violations](#minimum-violations)). The flag-and-keep policy applies: the allocation is always preserved.
 
-> **Note:** step 4 is a placeholder for a future call to the `generalsplitter` external API, which will eliminate rounding residuals entirely.
+9. Output preserves the order of `modelPortfolioDetails`. Products with `weight = 0` (e.g. CASH) are excluded from the output.
+
+> **Note:** step 4 (scaling) is a placeholder for a future call to the `generalsplitter` external API, which will eliminate rounding residuals entirely.
 
 ### Redemption
 

@@ -1,9 +1,17 @@
 package splitter
 
 import (
+	"sort"
+
 	"github.com/shopspring/decimal"
 	"github.com/valentinpj/smart-splitter/models"
 )
+
+type productAlloc struct {
+	mp      models.ModelItem
+	current decimal.Decimal
+	ideal   decimal.Decimal
+}
 
 // ProcessInvestment splits an investment order across model portfolio products,
 // prioritising products that are furthest below their model weight (shortfall-based allocation).
@@ -24,12 +32,6 @@ func ProcessInvestment(goal models.Goal, amountPrec, unitPrec int) models.GoalRe
 
 	// Compute ideal (shortfall-based) allocation for each model product with weight > 0.
 	// ideal_i = max(0, w_i * postTotal - currentValue_i)
-	type productAlloc struct {
-		mp      models.ModelItem
-		current decimal.Decimal
-		ideal   decimal.Decimal
-	}
-
 	var allocs []productAlloc
 	totalIdeal := decimal.Zero
 	totalWeight := decimal.Zero
@@ -72,13 +74,21 @@ func ProcessInvestment(goal models.Goal, amountPrec, unitPrec int) models.GoalRe
 		totalFeeAdjusted = totalFeeAdjusted.Add(feeAdjusted[i])
 	}
 
-	// Scale each allocation so that gross amounts sum to orderAmount, then check minimums.
+	// Pass 1: compute initial gross amounts (truncated down to amountDecimalPrecision).
+	grossAmounts := make([]decimal.Decimal, len(allocs))
+	for i := range allocs {
+		grossAmounts[i] = feeAdjusted[i].Div(totalFeeAdjusted).Mul(orderAmount).Truncate(int32(amountPrec))
+	}
+
+	// Repair step: bump violating products up to their minimum requirement,
+	// funded by proportionally reducing non-violating products.
+	grossAmounts = repairViolations(allocs, grossAmounts, amountPrec, unitPrec)
+
+	// Pass 2: build transaction details with updated gross amounts.
 	var details []models.TransactionDetail
 	for i, a := range allocs {
-		// gross_i = (feeAdjusted_i / totalFeeAdjusted) * orderAmount, truncated to amountDecimalPrecision
-		gross := feeAdjusted[i].Div(totalFeeAdjusted).Mul(orderAmount).Truncate(int32(amountPrec))
+		gross := grossAmounts[i]
 
-		// units = gross / marketPrice, truncated to unitDecimalPrecision
 		price, _ := decimal.NewFromString(a.mp.MarketPrice)
 		var units decimal.Decimal
 		if price.IsPositive() {
@@ -94,11 +104,11 @@ func ProcessInvestment(goal models.Goal, amountPrec, unitPrec int) models.GoalRe
 			netUnits = net.Div(price).Truncate(int32(unitPrec))
 		}
 
-		// Check minimum requirements (flag-and-keep: violations are reported but allocation is preserved)
+		// Check minimum requirements (flag-and-keep: violations are reported but allocation is preserved).
 		var tradeErr *models.TradeError
 		if gross.IsPositive() {
 			if a.current.IsZero() {
-				// First-time purchase: apply initial investment minimums against net amount
+				// First-time purchase: apply initial investment minimums against net amount.
 				minAmt, _ := decimal.NewFromString(a.mp.MinInitialInvestmentAmt)
 				minUnits, _ := decimal.NewFromString(a.mp.MinInitialInvestmentUnits)
 				if net.LessThan(minAmt) || netUnits.LessThan(minUnits) {
@@ -108,7 +118,7 @@ func ProcessInvestment(goal models.Goal, amountPrec, unitPrec int) models.GoalRe
 					}
 				}
 			} else {
-				// Subsequent purchase: apply top-up minimums against net amount
+				// Subsequent purchase: apply top-up minimums against net amount.
 				minAmt, _ := decimal.NewFromString(a.mp.MinTopupAmt)
 				minUnits, _ := decimal.NewFromString(a.mp.MinTopupUnits)
 				if net.LessThan(minAmt) || netUnits.LessThan(minUnits) {
@@ -134,4 +144,152 @@ func ProcessInvestment(goal models.Goal, amountPrec, unitPrec int) models.GoalRe
 		TransactionType:    goal.OrderType,
 		TransactionDetails: details,
 	}
+}
+
+// repairViolations attempts to clear minimum-requirement violations by bumping each
+// violating product's gross allocation up to its required minimum, funded by
+// proportionally reducing non-violating products.
+//
+// Violations are sorted by required bump ascending so that, when there is
+// insufficient slack to fix everything, the maximum number of violations is cleared.
+func repairViolations(allocs []productAlloc, grossAmounts []decimal.Decimal, amountPrec, unitPrec int) []decimal.Decimal {
+	one := decimal.NewFromInt(1)
+
+	// Per-product metadata needed for the repair.
+	type itemInfo struct {
+		gross    decimal.Decimal
+		reqGross decimal.Decimal // minimum gross to pass all checks; 0 if no minimum applies
+	}
+
+	items := make([]itemInfo, len(allocs))
+	for i, a := range allocs {
+		fee, _ := decimal.NewFromString(a.mp.TransactionFee)
+		price, _ := decimal.NewFromString(a.mp.MarketPrice)
+
+		var minAmt, minUnits decimal.Decimal
+		if a.current.IsZero() {
+			minAmt, _ = decimal.NewFromString(a.mp.MinInitialInvestmentAmt)
+			minUnits, _ = decimal.NewFromString(a.mp.MinInitialInvestmentUnits)
+		} else {
+			minAmt, _ = decimal.NewFromString(a.mp.MinTopupAmt)
+			minUnits, _ = decimal.NewFromString(a.mp.MinTopupUnits)
+		}
+
+		// requiredNet = max(minAmt, minUnits × price) — the net amount needed.
+		requiredNet := minAmt
+		if minUnitsCost := minUnits.Mul(price); minUnitsCost.GreaterThan(requiredNet) {
+			requiredNet = minUnitsCost
+		}
+
+		// requiredGross = ⌈requiredNet / (1 − fee)⌉ at amountPrec decimal places.
+		var reqGross decimal.Decimal
+		if requiredNet.IsPositive() {
+			divisor := one.Sub(fee)
+			if divisor.IsPositive() {
+				reqGross = ceilToPrec(requiredNet.Div(divisor), int32(amountPrec))
+			}
+		}
+
+		items[i] = itemInfo{gross: grossAmounts[i], reqGross: reqGross}
+	}
+
+	// Identify violations: positive gross allocation that falls below reqGross.
+	type violation struct {
+		idx  int
+		bump decimal.Decimal // how much gross must increase
+	}
+	var violations []violation
+	for i, it := range items {
+		if it.gross.IsZero() || it.reqGross.IsZero() {
+			continue
+		}
+		if it.gross.LessThan(it.reqGross) {
+			violations = append(violations, violation{idx: i, bump: it.reqGross.Sub(it.gross)})
+		}
+	}
+	if len(violations) == 0 {
+		return grossAmounts
+	}
+
+	// Sort violations cheapest-first to maximise the number fixed when slack is limited.
+	sort.Slice(violations, func(i, j int) bool {
+		return violations[i].bump.LessThan(violations[j].bump)
+	})
+
+	// Compute available slack from non-violating products.
+	// slack_j = gross_j − reqGross_j  (how much can be taken without causing a new violation).
+	violatingSet := make(map[int]bool)
+	for _, v := range violations {
+		violatingSet[v.idx] = true
+	}
+
+	type slackItem struct {
+		idx   int
+		slack decimal.Decimal
+	}
+	var slackItems []slackItem
+	totalSlack := decimal.Zero
+	for i, it := range items {
+		if violatingSet[i] || it.gross.IsZero() {
+			continue
+		}
+		slack := it.gross.Sub(it.reqGross) // >= 0 since non-violating
+		if slack.IsPositive() {
+			slackItems = append(slackItems, slackItem{idx: i, slack: slack})
+			totalSlack = totalSlack.Add(slack)
+		}
+	}
+	if totalSlack.IsZero() {
+		return grossAmounts
+	}
+
+	// Greedily fix violations (cheapest first) until slack runs out.
+	result := make([]decimal.Decimal, len(grossAmounts))
+	copy(result, grossAmounts)
+
+	remainingSlack := totalSlack
+	for _, v := range violations {
+		if v.bump.GreaterThan(remainingSlack) {
+			break
+		}
+		result[v.idx] = items[v.idx].reqGross
+		remainingSlack = remainingSlack.Sub(v.bump)
+	}
+
+	totalBumpUsed := totalSlack.Sub(remainingSlack)
+	if totalBumpUsed.IsZero() {
+		return grossAmounts
+	}
+
+	// Reduce non-violating products pro-rata by their slack to fund the bumps.
+	reductions := make([]decimal.Decimal, len(slackItems))
+	actualReduced := decimal.Zero
+	for i, si := range slackItems {
+		reductions[i] = si.slack.Div(totalSlack).Mul(totalBumpUsed).Truncate(int32(amountPrec))
+		actualReduced = actualReduced.Add(reductions[i])
+	}
+	for i, si := range slackItems {
+		result[si.idx] = result[si.idx].Sub(reductions[i])
+	}
+
+	// Distribute any truncation residual one unit at a time to keep the total sum exact.
+	residual := totalBumpUsed.Sub(actualReduced)
+	unit := decimal.New(1, -int32(amountPrec))
+	for _, si := range slackItems {
+		if !residual.IsPositive() {
+			break
+		}
+		if result[si.idx].Sub(items[si.idx].reqGross).GreaterThanOrEqual(unit) {
+			result[si.idx] = result[si.idx].Sub(unit)
+			residual = residual.Sub(unit)
+		}
+	}
+
+	return result
+}
+
+// ceilToPrec rounds d up to the given number of decimal places.
+func ceilToPrec(d decimal.Decimal, prec int32) decimal.Decimal {
+	factor := decimal.New(1, prec) // 10^prec
+	return d.Mul(factor).Ceil().Div(factor)
 }
