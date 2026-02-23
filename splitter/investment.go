@@ -85,24 +85,33 @@ func ProcessInvestment(goal models.Goal, amountPrec, unitPrec int) models.GoalRe
 			units = gross.Div(price).Truncate(int32(unitPrec))
 		}
 
+		// Compute net amount (after fee) for minimum requirement checks.
+		// Minimums are expressed in terms of what actually enters the portfolio.
+		fee, _ := decimal.NewFromString(a.mp.TransactionFee)
+		net := gross.Mul(one.Sub(fee))
+		var netUnits decimal.Decimal
+		if price.IsPositive() {
+			netUnits = net.Div(price).Truncate(int32(unitPrec))
+		}
+
 		// Check minimum requirements (flag-and-keep: violations are reported but allocation is preserved)
 		var tradeErr *models.TradeError
 		if gross.IsPositive() {
 			if a.current.IsZero() {
-				// First-time purchase: apply initial investment minimums
+				// First-time purchase: apply initial investment minimums against net amount
 				minAmt, _ := decimal.NewFromString(a.mp.MinInitialInvestmentAmt)
 				minUnits, _ := decimal.NewFromString(a.mp.MinInitialInvestmentUnits)
-				if gross.LessThan(minAmt) || units.LessThan(minUnits) {
+				if net.LessThan(minAmt) || netUnits.LessThan(minUnits) {
 					tradeErr = &models.TradeError{
 						Message: "Cannot trade this ticker because it breaches the minimum initial investment amount",
 						Code:    "MIN_INVESTMENT_VIOLATION",
 					}
 				}
 			} else {
-				// Subsequent purchase: apply top-up minimums
+				// Subsequent purchase: apply top-up minimums against net amount
 				minAmt, _ := decimal.NewFromString(a.mp.MinTopupAmt)
 				minUnits, _ := decimal.NewFromString(a.mp.MinTopupUnits)
-				if gross.LessThan(minAmt) || units.LessThan(minUnits) {
+				if net.LessThan(minAmt) || netUnits.LessThan(minUnits) {
 					tradeErr = &models.TradeError{
 						Message: "Cannot trade this ticker because it breaches the minimum topup amount",
 						Code:    "MIN_TOPUP_VIOLATION",

@@ -232,7 +232,11 @@ Violations are **flagged but not suppressed** — the calculated allocation is a
 
 | Code | Trigger | Applies to |
 |------|---------|------------|
-| `MIN_INVESTMENT_VIOLATION` | `gross_i < minInitialInvestmentAmt` or `units_i < minInitialInvestmentUnits` (first-time purchase, i.e. product not currently held) | Investment |
-| `MIN_TOPUP_VIOLATION` | `gross_i < minTopupAmt` or `units_i < minTopupUnits` (product already held) | Investment |
+| `MIN_INVESTMENT_VIOLATION` | `net_i < minInitialInvestmentAmt` or `netUnits_i < minInitialInvestmentUnits` (first-time purchase, i.e. product not currently held) | Investment |
+| `MIN_TOPUP_VIOLATION` | `net_i < minTopupAmt` or `netUnits_i < minTopupUnits` (product already held) | Investment |
 | `MIN_REDEMPTION_VIOLATION` | `redemption_i < minRedemptionAmt` or `units_i < minRedemptionUnits` | Redemption |
 | `MIN_HOLDING_VIOLATION` | Remaining value or units after a **partial** redemption fall below `minHoldingAmt` / `minHoldingUnits`. Full redemptions (remaining = 0) are always permitted. | Redemption |
+
+> **Investment minimums** (`MIN_INVESTMENT_VIOLATION`, `MIN_TOPUP_VIOLATION`) are checked against the **net** amount — i.e. `net_i = gross_i × (1 − transactionFee_i)` and `netUnits_i = net_i / marketPrice_i` — because the minimums represent what must actually enter the portfolio after the broker deducts its fee.
+>
+> **Redemption minimums** (`MIN_REDEMPTION_VIOLATION`, `MIN_HOLDING_VIOLATION`) are checked against the **gross** redemption amount, as the fee does not affect the splitting or validation logic for redemptions.
