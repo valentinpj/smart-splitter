@@ -126,6 +126,8 @@ The `transactionFee` (a rate in [0, 1)) is applied per product:
 - **Investment**: the fee reduces the net amount that actually enters the portfolio. The gross allocation is inflated by `1 / (1 − fee)` so that the net investment hits the shortfall target (e.g. shortfall $10, fee 1% → gross = $10 / 0.99 ≈ $10.10).
 - **Redemption**: the fee reduces the proceeds from the sale but does not affect the splitting logic or minimum-requirement checks.
 
+**Field priority rule:** when a ticker appears in both `goalDetails` and `modelPortfolioDetails`, the values from `modelPortfolioDetails` always take priority for `transactionFee` and all minimum requirement fields. If a field is absent (empty) in `modelPortfolioDetails`, it is treated as 0 — the corresponding `goalDetails` value is not used as a fallback. Fields from `goalDetails` are used only when the ticker is entirely absent from `modelPortfolioDetails`.
+
 ### Investment
 
 **Objective:** allocate `orderAmount` across model-portfolio products so that the post-investment portfolio is as close as possible to the model weights.

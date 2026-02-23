@@ -82,12 +82,25 @@ func ProcessRedemption(goal models.Goal, amountPrec, unitPrec int, volatilityBuf
 			units = redeemAmt.Div(price).Truncate(int32(unitPrec))
 		}
 
+		// Use modelPortfolioDetails fields in priority; fall back to goalDetails
+		// only when the ticker is absent from modelPortfolioDetails entirely.
+		minRedemptionAmt := zp.holding.MinRedemptionAmt
+		minRedemptionUnits := zp.holding.MinRedemptionUnits
+		minHoldingAmt := zp.holding.MinHoldingAmt
+		minHoldingUnits := zp.holding.MinHoldingUnits
+		if mp, inModel := modelMap[zp.holding.Ticker]; inModel {
+			minRedemptionAmt = mp.MinRedemptionAmt
+			minRedemptionUnits = mp.MinRedemptionUnits
+			minHoldingAmt = mp.MinHoldingAmt
+			minHoldingUnits = mp.MinHoldingUnits
+		}
+
 		tradeErr := checkRedemptionMinimums(
 			redeemAmt, units,
 			isFullRedemption,
 			zp.holding.Value, zp.holding.Units,
-			zp.holding.MinRedemptionAmt, zp.holding.MinRedemptionUnits,
-			zp.holding.MinHoldingAmt, zp.holding.MinHoldingUnits,
+			minRedemptionAmt, minRedemptionUnits,
+			minHoldingAmt, minHoldingUnits,
 			amountPrec, unitPrec,
 		)
 
