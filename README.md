@@ -165,14 +165,16 @@ The `transactionFee` (a rate in [0, 1)) is applied per product:
 7. **Repair step** — attempt to clear minimum violations before flagging them:
    - For each product with a violation, compute the minimum gross needed to clear it:
      ```
-     requiredNet_i  = max(minAmt_i, minUnits_i × marketPrice_i)
+     requiredNet_i   = max(minAmt_i, minUnits_i × marketPrice_i)
      requiredGross_i = ⌈requiredNet_i / (1 − transactionFee_i)⌉  (rounded UP to amountDecimalPrecision)
-     bump_i = requiredGross_i − gross_i
+     bump_i          = requiredGross_i − gross_i
      ```
    - Sort violations by `bump_i` ascending (cheapest to fix first).
-   - For each non-violating product j, compute available slack: `slack_j = gross_j − requiredGross_j`.
-   - Greedily apply bumps from cheapest to most expensive while total slack allows. If slack runs out, remaining violations are left as-is.
-   - Reduce non-violating products pro-rata by their slack to fund the bumps, keeping the total equal to `orderAmount`.
+   - Two funding tiers are used in order for each violation:
+     - **Tier 1 — safe slack:** reduce non-violating products from their gross down to their own minimum floor (`gross_j − requiredGross_j`). This never creates a new violation.
+     - **Tier 2 — zero-out:** if Tier 1 slack alone is insufficient, additionally zero out non-violating products entirely (smallest `requiredGross` first), gaining their `requiredGross` as extra slack. A gross of 0 is always valid — it simply means no trade for that product this round.
+   - If combined slack (Tier 1 + Tier 2) still cannot cover a bump, that violation is left unfixed.
+   - Non-zeroed products are reduced pro-rata by their safe slack to fund the bumps, keeping `Σ gross == orderAmount` exactly.
 
 8. Check remaining minimum requirements and flag any unresolved violations (see [Minimum violations](#minimum-violations)). The flag-and-keep policy applies: the allocation is always preserved.
 

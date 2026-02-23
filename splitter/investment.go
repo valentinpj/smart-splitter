@@ -147,15 +147,22 @@ func ProcessInvestment(goal models.Goal, amountPrec, unitPrec int) models.GoalRe
 }
 
 // repairViolations attempts to clear minimum-requirement violations by bumping each
-// violating product's gross allocation up to its required minimum, funded by
-// proportionally reducing non-violating products.
+// violating product's gross allocation up to its required minimum.
 //
-// Violations are sorted by required bump ascending so that, when there is
-// insufficient slack to fix everything, the maximum number of violations is cleared.
+// Two funding tiers, applied in order for each violation (cheapest bump first):
+//
+//  1. Safe slack: reduce non-violating products from their current gross down to their
+//     own minimum floor (gross_j − reqGross_j). Never creates a new violation.
+//
+//  2. Zero-out: if safe slack alone is insufficient, additionally zero out non-violating
+//     products entirely (smallest reqGross first), gaining their reqGross as extra slack.
+//     A gross of 0 is always valid — it simply means no trade for that product.
+//
+// After deciding which violations to fix, non-zeroed products are reduced pro-rata by
+// their safe slack to fund the bumps, keeping Σ gross == orderAmount exactly.
 func repairViolations(allocs []productAlloc, grossAmounts []decimal.Decimal, amountPrec, unitPrec int) []decimal.Decimal {
 	one := decimal.NewFromInt(1)
 
-	// Per-product metadata needed for the repair.
 	type itemInfo struct {
 		gross    decimal.Decimal
 		reqGross decimal.Decimal // minimum gross to pass all checks; 0 if no minimum applies
@@ -175,7 +182,7 @@ func repairViolations(allocs []productAlloc, grossAmounts []decimal.Decimal, amo
 			minUnits, _ = decimal.NewFromString(a.mp.MinTopupUnits)
 		}
 
-		// requiredNet = max(minAmt, minUnits × price) — the net amount needed.
+		// requiredNet = max(minAmt, minUnits × price)
 		requiredNet := minAmt
 		if minUnitsCost := minUnits.Mul(price); minUnitsCost.GreaterThan(requiredNet) {
 			requiredNet = minUnitsCost
@@ -184,8 +191,7 @@ func repairViolations(allocs []productAlloc, grossAmounts []decimal.Decimal, amo
 		// requiredGross = ⌈requiredNet / (1 − fee)⌉ at amountPrec decimal places.
 		var reqGross decimal.Decimal
 		if requiredNet.IsPositive() {
-			divisor := one.Sub(fee)
-			if divisor.IsPositive() {
+			if divisor := one.Sub(fee); divisor.IsPositive() {
 				reqGross = ceilToPrec(requiredNet.Div(divisor), int32(amountPrec))
 			}
 		}
@@ -196,7 +202,7 @@ func repairViolations(allocs []productAlloc, grossAmounts []decimal.Decimal, amo
 	// Identify violations: positive gross allocation that falls below reqGross.
 	type violation struct {
 		idx  int
-		bump decimal.Decimal // how much gross must increase
+		bump decimal.Decimal
 	}
 	var violations []violation
 	for i, it := range items {
@@ -211,77 +217,158 @@ func repairViolations(allocs []productAlloc, grossAmounts []decimal.Decimal, amo
 		return grossAmounts
 	}
 
-	// Sort violations cheapest-first to maximise the number fixed when slack is limited.
+	// Sort violations cheapest-first to maximise the number fixed when resources are limited.
 	sort.Slice(violations, func(i, j int) bool {
 		return violations[i].bump.LessThan(violations[j].bump)
 	})
 
-	// Compute available slack from non-violating products.
-	// slack_j = gross_j − reqGross_j  (how much can be taken without causing a new violation).
 	violatingSet := make(map[int]bool)
 	for _, v := range violations {
 		violatingSet[v.idx] = true
 	}
 
+	// Build slack info for non-violating products.
 	type slackItem struct {
-		idx   int
-		slack decimal.Decimal
+		idx       int
+		safeSlack decimal.Decimal // gross − reqGross; can always be taken without creating a new violation
+		reqGross  decimal.Decimal // additional slack available only if the product is zeroed entirely
 	}
 	var slackItems []slackItem
-	totalSlack := decimal.Zero
+	totalSafeSlack := decimal.Zero
 	for i, it := range items {
 		if violatingSet[i] || it.gross.IsZero() {
 			continue
 		}
-		slack := it.gross.Sub(it.reqGross) // >= 0 since non-violating
-		if slack.IsPositive() {
-			slackItems = append(slackItems, slackItem{idx: i, slack: slack})
-			totalSlack = totalSlack.Add(slack)
-		}
+		safeSlack := it.gross.Sub(it.reqGross) // >= 0 since non-violating
+		slackItems = append(slackItems, slackItem{idx: i, safeSlack: safeSlack, reqGross: it.reqGross})
+		totalSafeSlack = totalSafeSlack.Add(safeSlack)
 	}
-	if totalSlack.IsZero() {
+	if len(slackItems) == 0 {
 		return grossAmounts
 	}
 
-	// Greedily fix violations (cheapest first) until slack runs out.
+	// Zero-out candidates sorted by reqGross ascending: prefer zeroing products with
+	// the smallest minimum so that we sacrifice as little as possible.
+	zeroableSorted := make([]slackItem, len(slackItems))
+	copy(zeroableSorted, slackItems)
+	sort.Slice(zeroableSorted, func(i, j int) bool {
+		return zeroableSorted[i].reqGross.LessThan(zeroableSorted[j].reqGross)
+	})
+
 	result := make([]decimal.Decimal, len(grossAmounts))
 	copy(result, grossAmounts)
 
-	remainingSlack := totalSlack
+	zeroedSet := make(map[int]bool)
+	remainingSlack := totalSafeSlack // tracks available pool across iterations
+	totalBumpUsed := decimal.Zero
+
 	for _, v := range violations {
-		if v.bump.GreaterThan(remainingSlack) {
-			break
+		if v.bump.LessThanOrEqual(remainingSlack) {
+			// Tier 1: safe slack is sufficient.
+			result[v.idx] = items[v.idx].reqGross
+			remainingSlack = remainingSlack.Sub(v.bump)
+			totalBumpUsed = totalBumpUsed.Add(v.bump)
+		} else {
+			// Tier 2: try to bridge the gap by zeroing non-violating products.
+			extraNeeded := v.bump.Sub(remainingSlack)
+			extraGained := decimal.Zero
+			var toZero []int
+			for _, si := range zeroableSorted {
+				if zeroedSet[si.idx] || si.reqGross.IsZero() {
+					continue
+				}
+				toZero = append(toZero, si.idx)
+				extraGained = extraGained.Add(si.reqGross)
+				if extraGained.GreaterThanOrEqual(extraNeeded) {
+					break
+				}
+			}
+			if extraGained.GreaterThanOrEqual(extraNeeded) {
+				result[v.idx] = items[v.idx].reqGross
+				for _, idx := range toZero {
+					result[idx] = decimal.Zero
+					zeroedSet[idx] = true
+				}
+				// The zeroed products' reqGross values bridge the gap; update the pool.
+				remainingSlack = remainingSlack.Add(extraGained).Sub(v.bump)
+				totalBumpUsed = totalBumpUsed.Add(v.bump)
+			}
+			// else: insufficient resources even with zeroing — leave this violation unfixed.
 		}
-		result[v.idx] = items[v.idx].reqGross
-		remainingSlack = remainingSlack.Sub(v.bump)
 	}
 
-	totalBumpUsed := totalSlack.Sub(remainingSlack)
 	if totalBumpUsed.IsZero() {
 		return grossAmounts
 	}
 
-	// Reduce non-violating products pro-rata by their slack to fund the bumps.
-	reductions := make([]decimal.Decimal, len(slackItems))
-	actualReduced := decimal.Zero
-	for i, si := range slackItems {
-		reductions[i] = si.slack.Div(totalSlack).Mul(totalBumpUsed).Truncate(int32(amountPrec))
-		actualReduced = actualReduced.Add(reductions[i])
+	// Compute the net reduction still required from non-zeroed non-violating products.
+	// (Zeroed products already contribute their full gross to balancing the sum.)
+	zeroedContribution := decimal.Zero
+	for idx := range zeroedSet {
+		zeroedContribution = zeroedContribution.Add(items[idx].gross)
 	}
-	for i, si := range slackItems {
-		result[si.idx] = result[si.idx].Sub(reductions[i])
+	stillNeeded := totalBumpUsed.Sub(zeroedContribution)
+
+	// Collect non-zeroed, non-violating products for pro-rata redistribution.
+	var redistItems []slackItem
+	redistSafeSlack := decimal.Zero
+	for _, si := range slackItems {
+		if zeroedSet[si.idx] {
+			continue
+		}
+		redistItems = append(redistItems, si)
+		redistSafeSlack = redistSafeSlack.Add(si.safeSlack)
 	}
 
-	// Distribute any truncation residual one unit at a time to keep the total sum exact.
-	residual := totalBumpUsed.Sub(actualReduced)
 	unit := decimal.New(1, -int32(amountPrec))
-	for _, si := range slackItems {
-		if !residual.IsPositive() {
-			break
+
+	if stillNeeded.IsPositive() {
+		// Reduce non-zeroed products pro-rata by their safe slack.
+		if redistSafeSlack.IsPositive() {
+			actualReduced := decimal.Zero
+			reductions := make([]decimal.Decimal, len(redistItems))
+			for i, si := range redistItems {
+				reductions[i] = si.safeSlack.Div(redistSafeSlack).Mul(stillNeeded).Truncate(int32(amountPrec))
+				actualReduced = actualReduced.Add(reductions[i])
+			}
+			for i, si := range redistItems {
+				result[si.idx] = result[si.idx].Sub(reductions[i])
+			}
+			// Distribute any truncation residual one unit at a time.
+			residual := stillNeeded.Sub(actualReduced)
+			for _, si := range redistItems {
+				if !residual.IsPositive() {
+					break
+				}
+				if result[si.idx].Sub(items[si.idx].reqGross).GreaterThanOrEqual(unit) {
+					result[si.idx] = result[si.idx].Sub(unit)
+					residual = residual.Sub(unit)
+				}
+			}
 		}
-		if result[si.idx].Sub(items[si.idx].reqGross).GreaterThanOrEqual(unit) {
-			result[si.idx] = result[si.idx].Sub(unit)
-			residual = residual.Sub(unit)
+	} else if stillNeeded.IsNegative() {
+		// We over-zeroed (last zeroed product's reqGross exceeded what was strictly needed).
+		// Add the excess back to fixed-violation products, one unit at a time.
+		excess := stillNeeded.Neg()
+		var fixedIdxs []int
+		for _, v := range violations {
+			if result[v.idx].Equal(items[v.idx].reqGross) {
+				fixedIdxs = append(fixedIdxs, v.idx)
+			}
+		}
+		for excess.IsPositive() && len(fixedIdxs) > 0 {
+			anyAdded := false
+			for _, idx := range fixedIdxs {
+				if !excess.IsPositive() {
+					break
+				}
+				result[idx] = result[idx].Add(unit)
+				excess = excess.Sub(unit)
+				anyAdded = true
+			}
+			if !anyAdded {
+				break
+			}
 		}
 	}
 
