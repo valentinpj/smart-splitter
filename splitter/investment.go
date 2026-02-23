@@ -74,15 +74,27 @@ func ProcessInvestment(goal models.Goal, amountPrec, unitPrec int) models.GoalRe
 		totalFeeAdjusted = totalFeeAdjusted.Add(feeAdjusted[i])
 	}
 
-	// Pass 1: compute initial gross amounts (truncated down to amountDecimalPrecision).
+	// Gross cap per product: the maximum gross that keeps the post-investment value at or
+	// below the model weight target.  cap_i = floor(ideal_i / (1 − fee_i), amountPrec).
+	grossCaps := make([]decimal.Decimal, len(allocs))
+	for i := range allocs {
+		grossCaps[i] = feeAdjusted[i].Truncate(int32(amountPrec))
+	}
+
+	// Pass 1: compute initial gross amounts (truncated down to amountDecimalPrecision),
+	// capped so no product overshoots its model weight target.
 	grossAmounts := make([]decimal.Decimal, len(allocs))
 	for i := range allocs {
-		grossAmounts[i] = feeAdjusted[i].Div(totalFeeAdjusted).Mul(orderAmount).Truncate(int32(amountPrec))
+		g := feeAdjusted[i].Div(totalFeeAdjusted).Mul(orderAmount).Truncate(int32(amountPrec))
+		if g.GreaterThan(grossCaps[i]) {
+			g = grossCaps[i]
+		}
+		grossAmounts[i] = g
 	}
 
 	// Repair step: bump violating products up to their minimum requirement,
 	// funded by proportionally reducing non-violating products.
-	grossAmounts = repairViolations(allocs, grossAmounts, amountPrec, unitPrec)
+	grossAmounts = repairViolations(allocs, grossAmounts, grossCaps, amountPrec, unitPrec)
 
 	// Pass 2: build transaction details with updated gross amounts.
 	var details []models.TransactionDetail
@@ -160,7 +172,7 @@ func ProcessInvestment(goal models.Goal, amountPrec, unitPrec int) models.GoalRe
 //
 // After deciding which violations to fix, non-zeroed products are reduced pro-rata by
 // their safe slack to fund the bumps, keeping Σ gross == orderAmount exactly.
-func repairViolations(allocs []productAlloc, grossAmounts []decimal.Decimal, amountPrec, unitPrec int) []decimal.Decimal {
+func repairViolations(allocs []productAlloc, grossAmounts []decimal.Decimal, grossCaps []decimal.Decimal, amountPrec, unitPrec int) []decimal.Decimal {
 	one := decimal.NewFromInt(1)
 
 	type itemInfo struct {
@@ -200,6 +212,8 @@ func repairViolations(allocs []productAlloc, grossAmounts []decimal.Decimal, amo
 	}
 
 	// Identify violations: positive gross allocation that falls below reqGross.
+	// Skip violations where reqGross exceeds the model-weight cap — bumping to the
+	// minimum would overshoot the target weight, so the violation is left unfixed.
 	type violation struct {
 		idx  int
 		bump decimal.Decimal
@@ -210,6 +224,9 @@ func repairViolations(allocs []productAlloc, grossAmounts []decimal.Decimal, amo
 			continue
 		}
 		if it.gross.LessThan(it.reqGross) {
+			if it.reqGross.GreaterThan(grossCaps[i]) {
+				continue // cannot fix without overshooting model weight
+			}
 			violations = append(violations, violation{idx: i, bump: it.reqGross.Sub(it.gross)})
 		}
 	}

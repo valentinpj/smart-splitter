@@ -158,7 +158,12 @@ The `transactionFee` (a rate in [0, 1)) is applied per product:
    ```
    *Fallback:* if all ideals are 0 (every product already at or above model weight), distribute pro-rata by model weight (fee adjustment still applied).
 
-5. Truncate `gross_i` to `amountDecimalPrecision` decimal places (round down).
+5. Truncate `gross_i` to `amountDecimalPrecision` decimal places (round down), then cap at the model-weight ceiling:
+   ```
+   cap_i   = floor(feeAdjusted_i, amountDecimalPrecision)
+   gross_i = min(gross_i, cap_i)
+   ```
+   This ensures the post-investment value of each product never exceeds its model target. Any residual below `orderAmount` caused by capping is left unallocated. The cap is not applied in the fallback case.
 
 6. Compute `units_i = gross_i / marketPrice_i`, truncated down to `unitDecimalPrecision` decimal places. Represents the approximate units traded before the broker deducts its fee.
 
@@ -169,7 +174,8 @@ The `transactionFee` (a rate in [0, 1)) is applied per product:
      requiredGross_i = ⌈requiredNet_i / (1 − transactionFee_i)⌉  (rounded UP to amountDecimalPrecision)
      bump_i          = requiredGross_i − gross_i
      ```
-   - Sort violations by `bump_i` ascending (cheapest to fix first).
+   - If `requiredGross_i > cap_i`, the minimum cannot be met without overshooting the model weight target. The violation is left unfixed immediately (no repair attempted).
+   - Sort remaining violations by `bump_i` ascending (cheapest to fix first).
    - Two funding tiers are used in order for each violation:
      - **Tier 1 — safe slack:** reduce non-violating products from their gross down to their own minimum floor (`gross_j − requiredGross_j`). This never creates a new violation.
      - **Tier 2 — zero-out:** if Tier 1 slack alone is insufficient, additionally zero out non-violating products entirely (smallest `requiredGross` first), gaining their `requiredGross` as extra slack. A gross of 0 is always valid — it simply means no trade for that product this round.
