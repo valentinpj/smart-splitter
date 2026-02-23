@@ -47,25 +47,27 @@ Content-Type: `application/json`
 
 ### Holding object (`goalDetails` items)
 
+`ticker`, `units`, `marketPrice`, and `value` are always sourced from `goalDetails`. For `transactionFee` and all minimum requirement fields, `goalDetails` values are used only as a fallback when the ticker is entirely absent from `modelPortfolioDetails` (see [Field priority rule](#splitting-logic)).
+
 | Field | Type | Validation | Description |
 |-------|------|------------|-------------|
 | `ticker` | string | Non-empty | Product identifier |
 | `units` | string (decimal) | ≥ 0, ≤ `unitDecimalPrecision` d.p. | Current units held |
 | `marketPrice` | string (decimal) | > 0 | Current market price per unit |
 | `value` | string (decimal) | ≥ 0, ≤ `amountDecimalPrecision` d.p. | Current market value |
-| `minInitialInvestmentAmt` | string (decimal) | ≥ 0, ≤ `amountDecimalPrecision` d.p. | Minimum first-time purchase amount |
-| `minInitialInvestmentUnits` | string (decimal) | ≥ 0, ≤ `unitDecimalPrecision` d.p. | Minimum first-time purchase units |
-| `minTopupAmt` | string (decimal) | ≥ 0, ≤ `amountDecimalPrecision` d.p. | Minimum subsequent purchase amount |
-| `minTopupUnits` | string (decimal) | ≥ 0, ≤ `unitDecimalPrecision` d.p. | Minimum subsequent purchase units |
-| `minRedemptionAmt` | string (decimal) | ≥ 0, ≤ `amountDecimalPrecision` d.p. | Minimum redemption amount |
-| `minRedemptionUnits` | string (decimal) | ≥ 0, ≤ `unitDecimalPrecision` d.p. | Minimum redemption units |
-| `minHoldingAmt` | string (decimal) | ≥ 0, ≤ `amountDecimalPrecision` d.p. | Minimum remaining value after partial redemption |
-| `minHoldingUnits` | string (decimal) | ≥ 0, ≤ `unitDecimalPrecision` d.p. | Minimum remaining units after partial redemption |
-| `transactionFee` | string (decimal) | ≥ 0 and < 1 | Fee rate applied by the broker on this product |
+| `minInitialInvestmentAmt` | string (decimal) | Optional; ≥ 0, ≤ `amountDecimalPrecision` d.p. | Minimum first-time purchase amount (net) |
+| `minInitialInvestmentUnits` | string (decimal) | Optional; ≥ 0, ≤ `unitDecimalPrecision` d.p. | Minimum first-time purchase units (net) |
+| `minTopupAmt` | string (decimal) | Optional; ≥ 0, ≤ `amountDecimalPrecision` d.p. | Minimum subsequent purchase amount (net) |
+| `minTopupUnits` | string (decimal) | Optional; ≥ 0, ≤ `unitDecimalPrecision` d.p. | Minimum subsequent purchase units (net) |
+| `minRedemptionAmt` | string (decimal) | Optional; ≥ 0, ≤ `amountDecimalPrecision` d.p. | Minimum redemption amount (gross) |
+| `minRedemptionUnits` | string (decimal) | Optional; ≥ 0, ≤ `unitDecimalPrecision` d.p. | Minimum redemption units |
+| `minHoldingAmt` | string (decimal) | Optional; ≥ 0, ≤ `amountDecimalPrecision` d.p. | Minimum remaining value after partial redemption |
+| `minHoldingUnits` | string (decimal) | Optional; ≥ 0, ≤ `unitDecimalPrecision` d.p. | Minimum remaining units after partial redemption |
+| `transactionFee` | string (decimal) | Optional; ≥ 0 and < 1 | Fee rate applied by the broker on this product |
 
 ### Model item object (`modelPortfolioDetails` items)
 
-Same fields as a holding **except** `units` and `value` are replaced by:
+Same fields as a holding **except** `units` and `value` are replaced by `weight`. When a ticker appears in both `goalDetails` and `modelPortfolioDetails`, the values here always take priority for `transactionFee` and all minimum requirement fields — including when those fields are absent (empty is treated as 0, not as "use `goalDetails`").
 
 | Field | Type | Validation | Description |
 |-------|------|------------|-------------|
